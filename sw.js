@@ -7,8 +7,8 @@ self.addEventListener("push", (e) => {
   try { d = e.data ? e.data.json() : {}; } catch (_) { d = { titulo: "MindFirst", corpo: e.data ? e.data.text() : "" }; }
   e.waitUntil(self.registration.showNotification(d.titulo || "MindFirst", {
     body: d.corpo || "",
-    icon: "/icon-192.png?v=2",
-    badge: "/icon-192.png?v=2",
+    icon: "/icon-192.png?v=3",
+    badge: "/icon-192.png?v=3",
     tag: d.tag || undefined,
     data: { url: d.url || "/" },
   }));
