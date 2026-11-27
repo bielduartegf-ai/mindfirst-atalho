@@ -1452,7 +1452,8 @@ function painelPrevisao(){
   let dica="";
   if(p.entPrev && p.rest>0){
     if(p.livre<=0) dica=`O que entra no mês já foi todo comprometido. Cada gasto daqui até o dia ${p.dm} aumenta o vermelho.`;
-    else dica=`Para fechar no azul, dá para gastar até <b>${fmtK(p.porDia,"sai")} por dia</b> até o dia ${p.dm}. Seu ritmo hoje é ${fmtK(p.ritmo,"sai")} por dia${p.ritmo>p.porDia?", acima do que cabe":""}.`;
+    else if(p.ritmo>0 && p.porDia>p.ritmo*2.5) dica=`Seu ritmo é de ${fmtK(p.ritmo,"sai")} por dia, bem abaixo do que o mês comporta. Pode seguir tranquilo.`;
+    else dica=`Para fechar no azul, o ideal é gastar até <b>${fmtK(p.porDia,"sai")} por dia</b> até o dia ${p.dm}. Seu ritmo hoje é ${fmtK(p.ritmo,"sai")} por dia${p.ritmo>p.porDia?", acima do que cabe":""}.`;
   }
   const lst = arr => arr.map(([n,x])=>`${esc(n)} ${fmtK(x,"sai")}`).join(", ");
   const como=[
