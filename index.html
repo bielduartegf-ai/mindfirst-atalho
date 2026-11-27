@@ -58,7 +58,8 @@ header.top{position:relative;z-index:2;display:flex;align-items:center;gap:14px;
 .bell svg{width:19px;height:19px}
 .badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--brand);color:#fff;font:600 10.5px/19px var(--f-mono);text-align:center;box-shadow:0 0 12px rgba(255,45,85,.7)}
 .bell.shake{animation:shake .7s ease}
-@media(max-width:560px){.eye span{display:none}.eye{width:38px;padding:0;justify-content:center}.brand-t{font-size:21px;letter-spacing:.18em}}
+.eyes{display:flex;gap:8px}
+@media(max-width:560px){header.top{flex-wrap:wrap;row-gap:12px}.tools{display:contents}.bell{order:2;margin-left:auto}.eyes{order:3;flex-basis:100%}.eyes .eye{flex:1;justify-content:center;height:36px;font-size:12.5px}.brand-t{font-size:21px;letter-spacing:.18em}}
 
 /* Navegação */
 nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;background:rgba(7,8,11,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
@@ -571,8 +572,10 @@ html[data-fx="off"] .ledb,html[data-fx="off"] .scan,html[data-fx="off"] body::be
     <div class="status"><span id="st"><i class="dot local"></i>Iniciando</span><span id="relogio"></span></div>
   </div>
   <div class="tools">
-    <button id="olhoEnt" class="eye" onclick="toggleOc('ent')"></button>
-    <button id="olhoSai" class="eye" onclick="toggleOc('sai')"></button>
+    <div class="eyes">
+      <button id="olhoEnt" class="eye" onclick="toggleOc('ent')"></button>
+      <button id="olhoSai" class="eye" onclick="toggleOc('sai')"></button>
+    </div>
     <button id="sino" class="bell" onclick="abrirAlertas()" aria-label="Alertas"></button>
   </div>
 </header>
@@ -695,7 +698,8 @@ const fmtCurto = v => Number(v||0).toLocaleString("pt-BR",{style:"currency",curr
 const fmtMil = v => v>=1000 ? "R$ "+(v/1000).toLocaleString("pt-BR",{maximumFractionDigits:1})+" mil" : "R$ "+Math.round(v);
 const fmtK = (v,k) => ((k==="ent"&&ocultarEnt)||(k==="sai"&&ocultarSai)) ? "R$ •••••" : fmtRaw(v);
 const fmtSaldo = v => (ocultarEnt||ocultarSai) ? "R$ •••••" : fmtRaw(v);
-function toggleOc(k){ if(k==="ent"){ ocultarEnt=!ocultarEnt; gravar("mf_ocultarEnt", ocultarEnt?"1":"0"); } else { ocultarSai=!ocultarSai; gravar("mf_ocultarSai", ocultarSai?"1":"0"); } render(); }
+function toggleOc(k){ if(k==="ent"){ ocultarEnt=!ocultarEnt; gravar("mf_ocultarEnt", ocultarEnt?"1":"0"); } else { ocultarSai=!ocultarSai; gravar("mf_ocultarSai", ocultarSai?"1":"0"); } render();
+  const o = k==="ent" ? ocultarEnt : ocultarSai; toast(`${k==="ent"?"Entradas":"Saídas"} ${o?"ocultas: os valores aparecem como R$ •••••":"visíveis de novo"}`,null,null,"info"); }
 const num = v => Number(v||0).toLocaleString("pt-BR",{maximumFractionDigits:2});
 const pct = v => (isFinite(v)?v:0).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
 const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -905,8 +909,8 @@ function render(){
   const fab=document.getElementById("fab"); fab.hidden = sheetOpen; if(!fab.innerHTML) fab.innerHTML = ICON.plus;
   document.getElementById("nav").innerHTML = tabsVis().map(([k,l])=>`<button class="${k===tab?'on':''}" ${k===tab?'aria-current="page"':''} onclick="go('${k}')">${ICON[k]}<span>${l}</span></button>`).join("");
   const oe=document.getElementById("olhoEnt"), os=document.getElementById("olhoSai");
-  oe.className="eye"+(ocultarEnt?" off":""); oe.innerHTML=`${ocultarEnt?ICON.eyeOff:ICON.eye}<span>Entradas</span>`; oe.title=ocultarEnt?"Mostrar entradas":"Ocultar entradas"; oe.setAttribute("aria-label",oe.title);
-  os.className="eye"+(ocultarSai?" off":""); os.innerHTML=`${ocultarSai?ICON.eyeOff:ICON.eye}<span>Saídas</span>`; os.title=ocultarSai?"Mostrar saídas":"Ocultar saídas"; os.setAttribute("aria-label",os.title);
+  oe.className="eye"+(ocultarEnt?" off":""); oe.innerHTML=`${ocultarEnt?ICON.eyeOff:ICON.eye}<span>${ocultarEnt?"Mostrar entradas":"Ocultar entradas"}</span>`; oe.title=ocultarEnt?"Mostrar entradas":"Ocultar entradas"; oe.setAttribute("aria-label",oe.title);
+  os.className="eye"+(ocultarSai?" off":""); os.innerHTML=`${ocultarSai?ICON.eyeOff:ICON.eye}<span>${ocultarSai?"Mostrar saídas":"Ocultar saídas"}</span>`; os.title=ocultarSai?"Mostrar saídas":"Ocultar saídas"; os.setAttribute("aria-label",os.title);
   status();
   atualizarSino();
   const V = {inicio:vInicio, financas:vFinancas, agenda:vAgenda, metricas:vMetricas, ajustes:vAjustes};
@@ -1691,16 +1695,23 @@ function testeApp(){
   toast("Teste: é assim que os avisos aparecem com o MindFirst aberto.",null,null,"al"); som("alerta"); vibrar([80,60,80]);
   const b = document.getElementById("sino"); b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
 }
+const TRATAMENTOS = [["senhor","Senhor"],["mestre","Mestre"],["majestade","Majestade"],["nome","Pelo nome"]];
+function vocativo(){
+  const t = C("tratamento") || "senhor", nome = String(C("nome")||"").trim().split(" ")[0];
+  return t === "nome" ? (nome || "senhor") : t === "majestade" ? "Majestade" : t;
+}
+const capt = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+function setTratamento(v){ setCfg("tratamento", v); render(); toast(`Pronto. A partir de agora, ${v==="nome"?"te chamo pelo nome":"te chamo de "+(v==="majestade"?"Majestade":v)}.`,null,null,"ok"); }
 function textoAlerta(a){
-  const k = a.k, cat = a.cat || "";
+  const k = a.k, cat = a.cat || "", V = capt(vocativo());
   let titulo = a.titulo, dica = "";
-  if(/^lim-/.test(k)){ titulo = `Atenção: ${cat} passou do limite`; dica = `Sugiro segurar ${cat} até virar o mês.`; }
-  else if(/^lim80-/.test(k)){ const lim = +S.limites[cat] || 0, v = somaCats(mesHoje())[cat] || 0; titulo = `${cat} perto do limite`; dica = `Restam ${fmt(Math.max(0, lim - v))} nessa categoria até o fim do mês.`; }
-  else if(/^mes-estourou/.test(k)){ titulo = "Saiu mais do que entrou"; dica = "Vale segurar os próximos gastos do mês."; }
-  else if(/^mes-80/.test(k)){ titulo = "80% do que entrou já saiu"; }
-  else if(/^ritmo/.test(k)){ titulo = "Ritmo de gastos alto"; dica = "Diminuindo um pouco por dia, o mês fecha no azul."; }
-  else if(/^pico/.test(k)){ titulo = `Acima do seu normal em ${cat}`; }
-  else if(/^grande/.test(k)){ titulo = "Gasto fora do padrão"; }
+  if(/^lim-/.test(k)){ titulo = `${V}, ${cat} passou do limite`; dica = `Recomendo conter os gastos com ${cat} até o fim do mês.`; }
+  else if(/^lim80-/.test(k)){ const lim = +S.limites[cat] || 0, v = somaCats(mesHoje())[cat] || 0; titulo = `${V}, ${cat} está perto do limite`; dica = `Restam ${fmt(Math.max(0, lim - v))} nessa categoria até o fim do mês.`; }
+  else if(/^mes-estourou/.test(k)){ titulo = `${V}, as saídas passaram das entradas`; dica = "Sugiro segurar os próximos gastos do mês."; }
+  else if(/^mes-80/.test(k)){ titulo = `${V}, 80% do que entrou já foi utilizado`; }
+  else if(/^ritmo/.test(k)){ titulo = `${V}, o ritmo de gastos está alto`; dica = "Reduzindo um pouco por dia, o mês fecha no azul."; }
+  else if(/^pico/.test(k)){ titulo = `${V}, ${cat} está acima do seu normal`; }
+  else if(/^grande/.test(k)){ titulo = `${V}, registrei um gasto fora do padrão`; }
   return { titulo, corpo: (a.texto + (dica ? " " + dica : "")).trim() };
 }
 async function alertasParaCelular(lista){
@@ -1742,13 +1753,14 @@ function painelNotificacoes(){
     <p class="psub">Os avisos chegam como notificação do próprio MindFirst, mesmo com o app fechado. Faça estes passos uma vez em cada aparelho.</p>
     <ol class="setup">${p1}${p2}${p3}</ol>
     <div class="ph" style="margin:26px 0 6px"><h2>O que chega no celular</h2></div>
-    <p class="psub" style="margin-bottom:6px">Poucos avisos, só o que importa. Toque em <b>ver exemplo</b> para receber um agora com os seus números.</p>
+    <p class="psub" style="margin-bottom:6px">Poucos avisos, só o que importa, no tom de um mordomo. Toque em <b>ver exemplo</b> para receber um agora com os seus números.</p>
     <div class="nlist">
-      ${linhaNotif("Briefing da manhã",`“Bom dia${nomeCurto()}. 2 compromissos hoje: 10:00 Reunião… No mês sobram R$ 3.640.”`,`<div class="ctl"><input id="manha-h" type="time" value="${esc(m.hora||"08:00")}" aria-label="Horário do briefing da manhã" onchange="configurarManha(C('manha')&&C('manha').on,this.value)">${swt(m.on,"configurarManha(!(C('manha')&&C('manha').on),document.getElementById('manha-h').value)","Briefing da manhã")}</div>`,"manha",at)}
-      ${linhaNotif("Fechamento do dia",`“Hoje saíram R$ 253 em 3 lançamentos, a maior parte em Alimentação.” Se você não lançou nada, ele lembra.`,`<div class="ctl"><input id="diario-h" type="time" value="${esc(d.hora||"21:00")}" aria-label="Horário do fechamento do dia" onchange="configurarDiario(C('diario').on,this.value)">${swt(d.on,"configurarDiario(!C('diario').on,document.getElementById('diario-h').value)","Fechamento do dia")}</div>`,"fechamento",at)}
-      ${linhaNotif("Compromissos",`“Em ${lembreteMin} min: Reunião com cliente.” E outro quando começar.`,swt(C("pushAgenda")!==false,"setPushAgenda()","Avisos de compromissos"),"",at)}
-      ${linhaNotif("Alertas de gastos",`“Atenção: Alimentação passou do limite. R$ 415 de R$ 300. Sugiro segurar até virar o mês.” Só quando acontece.`,swt(C("alertasCel"),"togCfg('alertasCel')","Alertas de gastos"),"",at)}
-      ${linhaNotif("Resumo da semana",`Domingo às 20h: “Saíram R$ 1.240, 12% a menos que a semana passada. Maior gasto: Moradia.”`,swt(C("semanal")!==false,"setSemanal()","Resumo da semana"),"semana",at)}
+      ${linhaNotif("Como devo te chamar",`“Bom dia, ${esc(vocativo())}.”`,`<div class="seg">${TRATAMENTOS.map(([k,l])=>`<button class="${(C("tratamento")||"senhor")===k?'on':''}" onclick="setTratamento('${k}')">${l}</button>`).join("")}</div>`,"",at)}
+      ${linhaNotif("Briefing da manhã",`“Bom dia, ${esc(vocativo())}. Sua agenda de hoje: 10:00 Reunião. Finanças em ordem: R$ 3.640 disponíveis no mês. Tenha um excelente dia.”`,`<div class="ctl"><input id="manha-h" type="time" value="${esc(m.hora||"08:00")}" aria-label="Horário do briefing da manhã" onchange="configurarManha(C('manha')&&C('manha').on,this.value)">${swt(m.on,"configurarManha(!(C('manha')&&C('manha').on),document.getElementById('manha-h').value)","Briefing da manhã")}</div>`,"manha",at)}
+      ${linhaNotif("Fechamento do dia",`“Relatório do dia, ${esc(vocativo())}. Hoje foram R$ 253 em 3 lançamentos, a maior parte em Alimentação.” Se nada foi lançado, ele lembra com educação.`,`<div class="ctl"><input id="diario-h" type="time" value="${esc(d.hora||"21:00")}" aria-label="Horário do fechamento do dia" onchange="configurarDiario(C('diario').on,this.value)">${swt(d.on,"configurarDiario(!C('diario').on,document.getElementById('diario-h').value)","Fechamento do dia")}</div>`,"fechamento",at)}
+      ${linhaNotif("Compromissos",`“${esc(capt(vocativo()))}, em ${lembreteMin} min: Reunião com cliente. Sugiro já ir se preparando.” E outro na hora.`,swt(C("pushAgenda")!==false,"setPushAgenda()","Avisos de compromissos"),"",at)}
+      ${linhaNotif("Alertas de gastos",`“${esc(capt(vocativo()))}, Alimentação passou do limite. R$ 415 de R$ 300. Recomendo conter os gastos até o fim do mês.” Só quando acontece.`,swt(C("alertasCel"),"togCfg('alertasCel')","Alertas de gastos"),"",at)}
+      ${linhaNotif("Resumo da semana",`Domingo às 20h: “Relatório semanal, ${esc(vocativo())}. Saíram R$ 1.240, 12% a menos que a semana anterior. Excelente controle.”`,swt(C("semanal")!==false,"setSemanal()","Resumo da semana"),"semana",at)}
     </div>
     <div class="det-f" style="justify-content:flex-start;border:0;margin-top:6px"><button class="link" onclick="testeApp()">Ver como fica um aviso aqui no app ›</button></div>
   </section>`;
