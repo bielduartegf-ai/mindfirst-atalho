@@ -2248,8 +2248,8 @@ function painelSiri(){
 
     <div class="siri-fim">
       <div class="sf-t">É assim que o atalho fica no final</div>
-      <div class="sf-a laranja"><b>Pedir</b> <span class="pill">Texto</span> com <span class="pill">O que deseja, senhor?</span></div>
-      <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Entrada Fornecida</span></div>
+      <div class="sf-a laranja"><b>Ditar texto</b> <span class="pill">Português (Brasil)</span></div>
+      <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Texto Ditado</span></div>
       <div class="sf-a azul"><b>URL</b> <span class="pill">https://gvmc…texto=</span><span class="pill var">Texto codificado</span></div>
       <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill var">URL</span></div>
       <div class="sf-a cinza"><b>Falar</b> <span class="pill var">Conteúdo do URL</span></div>
@@ -2261,8 +2261,8 @@ function painelSiri(){
     <ol class="siri-passos">
       ${passo(1, `Toque aqui para copiar o seu link (ele já tem a sua chave):<button class="btn" style="margin-top:10px" onclick="copiarTexto(linkSiri(),'Link copiado! Agora abra o app Atalhos.')">Copiar meu link</button>`)}
       ${passo(2, `Abra o app <b>Atalhos</b> do iPhone (ícone de quadrados coloridos) e toque no <b>+</b> lá em cima.`)}
-      ${passo(3, `Toque na busca de ações embaixo, escreva <b>pedir</b> e toque em <b>Pedir Entrada</b>. <span class="op">No lugar de "Pergunta", escreva <i>O que deseja, senhor?</i></span>`)}
-      ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Não precisa mexer em nada nela.`)}
+      ${passo(3, `Toque na busca de ações embaixo, escreva <b>ditar</b> e toque em <b>Ditar Texto</b>. Toque na setinha dela: em <b>Idioma</b> escolha <b>Português (Brasil)</b> e em <b>Parar de Ouvir</b> escolha <b>Após Pausa</b>. É ela que ouve a sua voz.`)}
+      ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Confira se nela aparece <b>Texto Ditado</b>; se não, toque no campo azul e escolha <b>Texto Ditado</b>.`)}
       ${passo(5, `Busque <b>URL</b> e toque na ação que se chama só <b>URL</b> (ícone azul de corrente). Toque no texto dela (aparece <i>apple.com</i>) e apague. Toque <b>uma vez</b> no campo vazio e escolha <b>Colar</b>. Depois, ainda com o teclado aberto, toque na sugestão logo acima do teclado (<b>Texto codificado</b>): ela entra no fim do link.`)}
       ${passo(6, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Não mexa em nada: ela já usa o link do passo anterior.`)}
       ${passo(7, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
