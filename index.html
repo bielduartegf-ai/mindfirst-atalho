@@ -2232,7 +2232,7 @@ async function testarSiri(){
     try{ if(C("som") && "speechSynthesis" in window){ const u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; speechSynthesis.cancel(); speechSynthesis.speak(u); } }catch(e){}
   }catch(e){ out.className = "siri-r err"; out.textContent = "Sem conexão. Verifique a internet e tente de novo."; }
 }
-const linkSiri = () => `${SIRI_URL}?siri=${C("siri")}&texto=`;
+const linkSiri = () => `${SIRI_URL}?siri=${C("siri")}`;
 function painelSiri(){
   const k = C("siri");
   if(!k) return `<section class="panel s7" id="siri">
@@ -2248,10 +2248,8 @@ function painelSiri(){
 
     <div class="siri-fim">
       <div class="sf-t">É assim que o atalho fica no final</div>
-      <div class="sf-a laranja"><b>Ditar texto</b> <span class="pill">Português (Brasil)</span></div>
-      <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Texto Ditado</span></div>
-      <div class="sf-a azul"><b>URL</b> <span class="pill">https://gvmc…texto=</span><span class="pill var">Texto codificado</span></div>
-      <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill var">URL</span></div>
+      <div class="sf-a laranja"><b>Gravar áudio</b> <span class="pill">Imediatamente</span> <span class="pill">8 segundos</span></div>
+      <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill">https://gvmc…siri=…</span> <b>POST</b> <span class="pill var">Áudio Gravado</span></div>
       <div class="sf-a cinza"><b>Falar</b> <span class="pill var">Conteúdo do URL</span></div>
       <div class="sf-a laranja"><b>Se</b> <span class="pill var">Conteúdo do URL</span> <b>não contém</b> <span class="pill">ordens</span></div>
       <div class="sf-a cinza sf-in"><b>Executar</b> <span class="pill">Jarvis</span></div>
@@ -2261,16 +2259,16 @@ function painelSiri(){
     <ol class="siri-passos">
       ${passo(1, `Toque aqui para copiar o seu link (ele já tem a sua chave):<button class="btn" style="margin-top:10px" onclick="copiarTexto(linkSiri(),'Link copiado! Agora abra o app Atalhos.')">Copiar meu link</button>`)}
       ${passo(2, `Abra o app <b>Atalhos</b> do iPhone (ícone de quadrados coloridos) e toque no <b>+</b> lá em cima.`)}
-      ${passo(3, `Toque na busca de ações embaixo, escreva <b>ditar</b> e toque em <b>Ditar Texto</b>. Toque na setinha dela: em <b>Idioma</b> escolha <b>Português (Brasil)</b> e em <b>Parar de Ouvir</b> escolha <b>Após Pausa</b>. É ela que ouve a sua voz.`)}
-      ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Confira se nela aparece <b>Texto Ditado</b>; se não, toque no campo azul e escolha <b>Texto Ditado</b>.`)}
-      ${passo(5, `Busque <b>URL</b> e toque na ação que se chama só <b>URL</b> (ícone azul de corrente). Toque no texto dela (aparece <i>apple.com</i>) e apague. Toque <b>uma vez</b> no campo vazio e escolha <b>Colar</b>. Depois, ainda com o teclado aberto, toque na sugestão logo acima do teclado (<b>Texto codificado</b>): ela entra no fim do link.`)}
-      ${passo(6, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Não mexa em nada: ela já usa o link do passo anterior.`)}
-      ${passo(7, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
-      ${passo(8, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>.`)}
-      ${passo(9, `<b>Modo conversa</b> (para o Jarvis continuar ouvindo): busque <b>se</b> e toque em <b>Se</b>. Toque em <b>Entrada</b> e escolha <b>Conteúdo do URL</b>. Toque em <b>Condição</b> e escolha <b>não contém</b>. No campo <b>Texto</b>, escreva <b>ordens</b>.`)}
-      ${passo(10, `Busque <b>executar atalho</b> e toque em <b>Executar Atalho</b>. Arraste essa ação para <b>dentro do Se</b> (entre "Se" e "Senão"). Toque em <b>Atalho</b> e escolha <b>Jarvis</b>. Se aparecer um bloco <b>Senão</b> vazio, pode deixar. Pronto!`)}
+      ${passo(3, `Busque <b>gravar</b> e toque em <b>Gravar Áudio</b>. Toque na setinha dela: <b>Começar a Gravar</b> = <b>Imediatamente</b>; <b>Terminar Gravação</b> = <b>Após Tempo</b>, com <b>8 segundos</b>. É ela que ouve a sua voz. Na primeira vez, o iPhone pede o microfone: toque em <b>Permitir</b>.`)}
+      ${passo(4, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Toque na palavra azul <b>URL</b>, toque uma vez no campo e escolha <b>Colar</b>.`)}
+      ${passo(5, `Toque na setinha dessa ação: <b>Método</b> = <b>POST</b>; <b>Corpo da Solicitação</b> = <b>Arquivo</b>; em <b>Arquivo</b>, escolha <b>Áudio Gravado</b>.`)}
+      ${passo(6, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
+      ${passo(7, `<b>Modo conversa</b> (para o Jarvis continuar ouvindo): busque <b>se</b> e toque em <b>Se</b>. Toque em <b>Entrada</b> e escolha <b>Conteúdos do URL</b>. Toque em <b>Condição</b> e escolha <b>não contém</b>. No campo <b>Texto</b>, escreva <b>ordens</b>.`)}
+      ${passo(8, `Busque <b>executar atalho</b> e toque em <b>Executar Atalho</b>. Arraste essa ação para <b>dentro do Se</b> (entre "Se" e "Caso Contrário"). Toque em <b>Atalho</b> e escolha <b>Jarvis</b>.`)}
+      ${passo(9, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>.`)}
+      ${passo(10, `Para chamar só falando "Jarvis": <b>Ajustes › Acessibilidade › Atalhos Vocais</b>, escolha o atalho <b>Jarvis</b> e grave a palavra <b>Jarvis</b>. Pronto!`)}
     </ol>
-    <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Fale do seu jeito: "gastei 35 no mercado" · "20 de uber e 15 de lanche" · "recebi 500 do freela" · "quanto eu gastei esse mês?" · "o que tenho amanhã?" · "me explica o que é CDI". Ele responde e continua ouvindo; para encerrar, diga <b>"obrigado, só isso"</b>.</div>
+    <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Fale do seu jeito: "gastei 35 no mercado" · "20 de uber e 15 de lanche" · "recebi 500 do freela" · "quanto eu gastei esse mês?" · "o que tenho amanhã?" · "me explica o que é CDI". Você tem 8 segundos para falar; ele responde e volta a ouvir. Para encerrar, diga <b>"obrigado, só isso"</b>.</div>
 
     <div class="form" style="margin-top:18px">
       <div class="psub" style="margin:0">Quer ver como a Siri vai responder? Escreva uma frase aqui:</div>
