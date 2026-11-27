@@ -2249,7 +2249,8 @@ function painelSiri(){
       <div class="sf-t">É assim que o atalho fica no final</div>
       <div class="sf-a laranja"><b>Pedir</b> <span class="pill">Texto</span> com <span class="pill">O que registro, senhor?</span></div>
       <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Entrada Fornecida</span></div>
-      <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill">mindfirst…texto=</span><span class="pill var">Texto codificado</span></div>
+      <div class="sf-a azul"><b>URL</b> <span class="pill">https://gvmc…texto=</span><span class="pill var">Texto codificado</span></div>
+      <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill var">URL</span></div>
       <div class="sf-a cinza"><b>Falar</b> <span class="pill var">Conteúdo do URL</span></div>
     </div>
 
@@ -2258,9 +2259,10 @@ function painelSiri(){
       ${passo(2, `Abra o app <b>Atalhos</b> do iPhone (ícone de quadrados coloridos) e toque no <b>+</b> lá em cima.`)}
       ${passo(3, `Toque na busca de ações embaixo, escreva <b>pedir</b> e toque em <b>Pedir Entrada</b>. <span class="op">Opcional: no lugar de "Pergunta", escreva <i>O que registro, senhor?</i></span>`)}
       ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Não precisa mexer em nada nela.`)}
-      ${passo(5, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Toque na palavra azul <b>URL</b>, segure o dedo e toque em <b>Colar</b>. Com o teclado ainda aberto, toque na sugestão que aparece logo acima dele (<b>Texto codificado</b>): ela entra no fim do link.`)}
-      ${passo(6, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
-      ${passo(7, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>. Pronto!`)}
+      ${passo(5, `Busque <b>URL</b> e toque na ação que se chama só <b>URL</b> (ícone azul de corrente). Toque no texto dela (aparece <i>apple.com</i>) e apague. Toque <b>uma vez</b> no campo vazio e escolha <b>Colar</b>. Depois, ainda com o teclado aberto, toque na sugestão logo acima do teclado (<b>Texto codificado</b>): ela entra no fim do link.`)}
+      ${passo(6, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Não mexa em nada: ela já usa o link do passo anterior.`)}
+      ${passo(7, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
+      ${passo(8, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>. Pronto!`)}
     </ol>
     <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Quando ela perguntar, fale por exemplo: "gastei 35 no mercado" · "35 reais de uber" · "paguei 1.200 de aluguel" · "recebi 500 do freela".</div>
 
