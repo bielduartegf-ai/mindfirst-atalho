@@ -543,6 +543,15 @@ header.top{padding-top:calc(18px + env(safe-area-inset-top,0px))}
 .siri-r.on,.siri-r.err{display:block}
 .siri-r.on{background:rgba(43,255,154,.06);border:1px solid rgba(43,255,154,.3);color:var(--text)}
 .siri-r.err{background:rgba(255,197,61,.06);border:1px solid rgba(255,197,61,.3);color:var(--warn)}
+/* Siri: desenho do atalho pronto */
+.siri-fim{margin:4px 0 20px;padding:14px;border-radius:16px;background:#15171c;border:1px solid var(--line2);display:grid;gap:8px}
+.sf-t{font:600 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.sf-a{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:11px 12px;border-radius:12px;background:#22252c;font-size:14px;line-height:1.3;border-left:4px solid var(--c)}
+.sf-a b{font-weight:600;color:#fff}
+.sf-a.laranja{--c:#ff9f0a} .sf-a.cinza{--c:#8e8e93} .sf-a.azul{--c:#0a84ff}
+.sf-a .pill{padding:3px 8px;border-radius:7px;background:rgba(255,255,255,.08);color:#d1d1d6;font-size:13px;overflow-wrap:anywhere}
+.sf-a .pill.var{background:rgba(10,132,255,.22);color:#64b5ff}
+.siri-passos .op{display:block;margin-top:4px;font-size:13px;color:var(--muted)}
 /* tela de entrada */
 #auth{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow-y:auto;background:radial-gradient(700px 500px at 80% -10%,rgba(255,45,85,.18),transparent 60%),radial-gradient(600px 500px at 0% 100%,rgba(164,107,255,.14),transparent 60%),var(--bg);padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
 #auth[hidden]{display:none}
@@ -2200,10 +2209,10 @@ function novaChaveSiri(){
   return Array.from(b, x=>x.toString(16).padStart(2,"0")).join("");
 }
 function ativarSiri(trocar){
-  if(trocar && !confirm("Gerar uma chave nova? O atalho atual para de funcionar até você colar a chave nova nele.")) return;
+  if(trocar && !confirm("Gerar um link novo? O atalho atual para de funcionar até você colar o link novo nele.")) return;
   setCfg("siri", novaChaveSiri()); render();
   setTimeout(()=>irPara("siri"), 60);
-  toast(trocar ? "Chave nova gerada. Atualize o atalho." : "Pronto! Agora monte o atalho seguindo os passos.", null, null, "ok");
+  toast(trocar ? "Link novo gerado. Cole ele no atalho." : "Pronto! Agora siga os passos no iPhone.", null, null, "ok");
 }
 function copiarTexto(t, msg){
   const ok = ()=>toast(msg, null, null, "ok");
@@ -2222,6 +2231,7 @@ async function testarSiri(){
     try{ if(C("som") && "speechSynthesis" in window){ const u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; speechSynthesis.cancel(); speechSynthesis.speak(u); } }catch(e){}
   }catch(e){ out.className = "siri-r err"; out.textContent = "Sem conexão. Verifique a internet e tente de novo."; }
 }
+const linkSiri = () => `${SIRI_URL}?siri=${C("siri")}&texto=`;
 function painelSiri(){
   const k = C("siri");
   if(!k) return `<section class="panel s7" id="siri">
@@ -2230,24 +2240,36 @@ function painelSiri(){
     <button class="btn" onclick="ativarSiri(false)">Ativar registro pela Siri</button>
   </section>`;
   const passo = (n, t) => `<li><span class="n">${n}</span><div>${t}</div></li>`;
+  const foraDoIphone = !/iPhone|iPad|iPod/.test(navigator.userAgent);
   return `<section class="panel s7" id="siri">
     <div class="ph" style="margin-bottom:8px"><h2>Registrar pela Siri</h2><span class="live"><i></i>Ativo</span></div>
-    <p class="psub">Monte o atalho uma vez no iPhone (leva uns 3 minutos). Depois é só dizer <b>"E aí Siri, Jarvis"</b> e falar o gasto ou a entrada.</p>
+    <p class="psub">Você monta o atalho uma vez, no <b>iPhone</b>, e depois é só dizer <b>"E aí Siri, Jarvis"</b>.${foraDoIphone ? " Abra esta mesma tela no MindFirst do iPhone para seguir os passos lá." : ""}</p>
+
+    <div class="siri-fim">
+      <div class="sf-t">É assim que o atalho fica no final</div>
+      <div class="sf-a laranja"><b>Pedir</b> <span class="pill">Texto</span> com <span class="pill">O que registro, senhor?</span></div>
+      <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Entrada Fornecida</span></div>
+      <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill">mindfirst…texto=</span><span class="pill var">Texto codificado</span></div>
+      <div class="sf-a cinza"><b>Falar</b> <span class="pill var">Conteúdo do URL</span></div>
+    </div>
+
     <ol class="siri-passos">
-      ${passo(1, `Abra o app <b>Atalhos</b> e toque em <b>+</b>. Toque no nome lá em cima e chame o atalho de <b>Jarvis</b>.`)}
-      ${passo(2, `Toque em <b>Adicionar Ação</b>, busque <b>Pedir Entrada</b> e toque nela. Onde está "Pergunta", escreva: <i>O que registro, senhor?</i>`)}
-      ${passo(3, `Adicione a ação <b>Obter Conteúdo do URL</b>. No lugar de "URL", cole o endereço:<div class="siri-c"><code>${esc(SIRI_URL)}</code><button class="mini-btn" onclick="copiarTexto(SIRI_URL,'Endereço copiado')">Copiar</button></div>`)}
-      ${passo(4, `Toque na setinha dessa ação. Em <b>Método</b> escolha <b>POST</b>. Em <b>Corpo da Solicitação</b> escolha <b>JSON</b>. Toque em <b>Adicionar novo campo › Texto</b> duas vezes:
-        <div class="siri-campos"><div><b>siri</b> <span>→ cole a sua chave</span></div><div><b>texto</b> <span>→ toque no valor e escolha <b>Entrada Fornecida</b></span></div></div>
-        <div class="siri-c"><code>${esc(k)}</code><button class="mini-btn" onclick="copiarTexto(C('siri'),'Chave copiada')">Copiar chave</button></div>`)}
-      ${passo(5, `Adicione a ação <b>Falar Texto</b> (é ela que lê a resposta em voz alta). Toque em <b>OK</b>. Pronto.`)}
+      ${passo(1, `Toque aqui para copiar o seu link (ele já tem a sua chave):<button class="btn" style="margin-top:10px" onclick="copiarTexto(linkSiri(),'Link copiado! Agora abra o app Atalhos.')">Copiar meu link</button>`)}
+      ${passo(2, `Abra o app <b>Atalhos</b> do iPhone (ícone de quadrados coloridos) e toque no <b>+</b> lá em cima.`)}
+      ${passo(3, `Toque na busca de ações embaixo, escreva <b>pedir</b> e toque em <b>Pedir Entrada</b>. <span class="op">Opcional: no lugar de "Pergunta", escreva <i>O que registro, senhor?</i></span>`)}
+      ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Não precisa mexer em nada nela.`)}
+      ${passo(5, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Toque na palavra azul <b>URL</b>, segure o dedo e toque em <b>Colar</b>. Com o teclado ainda aberto, toque na sugestão que aparece logo acima dele (<b>Texto codificado</b>): ela entra no fim do link.`)}
+      ${passo(6, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
+      ${passo(7, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>. Pronto!`)}
     </ol>
-    <div class="siri-ex"><b>Experimente falar:</b> "gastei 35 no mercado" · "paguei 1.200 de aluguel" · "35 reais de uber" · "recebi 500 do freela"</div>
-    <div class="form" style="margin-top:16px">
-      <div class="g2"><input id="siri-t" placeholder="Teste aqui: gastei 35 no mercado" autocomplete="off" onkeydown="if(event.key==='Enter')testarSiri()"><button class="btn sec" onclick="testarSiri()">Testar (não salva)</button></div>
+    <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Quando ela perguntar, fale por exemplo: "gastei 35 no mercado" · "35 reais de uber" · "paguei 1.200 de aluguel" · "recebi 500 do freela".</div>
+
+    <div class="form" style="margin-top:18px">
+      <div class="psub" style="margin:0">Quer ver como a Siri vai responder? Escreva uma frase aqui:</div>
+      <div class="g2"><input id="siri-t" placeholder="gastei 35 no mercado" autocomplete="off" onkeydown="if(event.key==='Enter')testarSiri()"><button class="btn sec" onclick="testarSiri()">Testar (não salva)</button></div>
       <div id="siri-r" class="siri-r" aria-live="polite"></div>
     </div>
-    <p class="note">A chave é só sua: quem tiver ela consegue registrar na sua conta. <button class="link" onclick="ativarSiri(true)">Gerar chave nova</button></p>
+    <p class="note">Seu link é só seu: quem tiver ele consegue registrar na sua conta. <button class="link" onclick="ativarSiri(true)">Gerar link novo</button></p>
   </section>`;
 }
 setInterval(()=>{ if(document.visibilityState === "visible" && usuario) puxarFila(); }, 60000);
