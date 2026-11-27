@@ -480,10 +480,69 @@ main.entra .meter>i,main.entra .jb>i{animation:barx 1.1s cubic-bezier(.2,.8,.2,1
 .mini-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
 .mini-btn.pri{height:40px;padding:0 16px;border:0;background:linear-gradient(135deg,var(--brand2),var(--brand));color:#fff;font-weight:600;box-shadow:0 0 18px -4px var(--brand)}
 .mini-btn:disabled{opacity:.45;cursor:default}
+/* previsão do fim do mês */
+.pv-v{--c:var(--hud);display:flex;gap:12px;align-items:flex-start;margin:0 0 16px;padding:14px 16px;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 35%,transparent);background:color-mix(in srgb,var(--c) 7%,transparent)}
+.pv-v.pos{--c:var(--ent)} .pv-v.warn{--c:var(--warn)} .pv-v.neg{--c:var(--sai)}
+.pv-v>i{flex:none;width:10px;height:10px;margin-top:7px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c);animation:pvp 2.2s ease-in-out infinite}
+@keyframes pvp{50%{opacity:.35}}
+.pv-v p{margin:0;font-size:15px;line-height:1.55;color:var(--text)}
+.pv-v p b{color:var(--c);font-variant-numeric:tabular-nums}
+.pv-v p span{display:block;margin-top:6px;font-size:13.5px;color:var(--text2)}
+.pv-v p span b{color:var(--text)}
+.pv-fut{fill:rgba(63,240,255,.035)}
+.pv-hoje{stroke:rgba(63,240,255,.5);stroke-width:1;stroke-dasharray:2 4}
+.pv-hj{fill:var(--hud);font:600 9.5px var(--f-mono);letter-spacing:.14em}
+.pv-s,.pv-e{fill:none;stroke-width:2.2;stroke-dasharray:6 6;stroke-linecap:round;stroke-linejoin:round}
+.pv-s{stroke:var(--sai);opacity:.85} .pv-e{stroke:var(--ent);opacity:.75}
+.pv-fim{fill:var(--bg);stroke-width:2.5} .pv-fim.s{stroke:var(--sai);filter:drop-shadow(0 0 6px var(--sai))} .pv-fim.e{stroke:var(--ent);filter:drop-shadow(0 0 6px var(--ent))}
+.pv-read{margin-top:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.02);font-size:13.5px;line-height:1.7}
+.pv-read .tt{font:500 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--hud);margin-bottom:4px}
+.pv-read .tr{display:flex;justify-content:space-between;gap:16px}
+.pv-read .tr span{color:var(--muted)} .pv-read .tr b{font-weight:600;font-variant-numeric:tabular-nums}
+.pv-read .tr b.neg{color:var(--sai)} .pv-read .tr b.pos{color:var(--ent)}
+#previsao details.more{margin-top:16px}
+.pv-como{margin:0;padding-left:18px;display:grid;gap:8px;font-size:13.5px;line-height:1.55;color:var(--text2)}
+.pv-como b{color:var(--text);font-weight:600}
 /* área do relógio e da bateria do iPhone (app em tela cheia) */
 header.top{padding-top:calc(18px + env(safe-area-inset-top,0px))}
 @media(min-width:900px){header.top{padding-top:calc(20px + env(safe-area-inset-top,0px))}}
 .barra-topo{position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);z-index:45;background:var(--bg);pointer-events:none}
+/* bloqueio com PIN */
+#pin{position:fixed;inset:0;z-index:120;display:grid;place-items:center;overflow-y:auto;background:radial-gradient(600px 460px at 50% -10%,rgba(63,240,255,.14),transparent 60%),radial-gradient(600px 500px at 50% 110%,rgba(255,45,85,.16),transparent 60%),var(--bg);padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px))}
+#pin[hidden]{display:none}
+.pin-box{width:min(100%,330px);display:grid;justify-items:center;text-align:center}
+.pin-box img{width:72px;height:72px;border-radius:18px;box-shadow:0 0 34px rgba(255,45,85,.45)}
+.pin-box h1{margin:18px 0 6px;font:700 26px/1.1 var(--f-display);letter-spacing:.06em;text-transform:uppercase}
+.pin-box>p{margin:0;min-height:42px;max-width:30ch;font-size:14px;line-height:1.5;color:var(--muted)}
+.pin-box>p.err{color:var(--warn)}
+.pin-dots{display:flex;gap:18px;margin:18px 0 26px}
+.pin-dots i{width:15px;height:15px;border-radius:50%;border:2px solid var(--line2);transition:background .15s,box-shadow .15s,border-color .15s}
+.pin-dots i.on{background:var(--hud);border-color:var(--hud);box-shadow:0 0 14px var(--hud)}
+.pin-dots.erro{animation:pinTreme .38s}
+.pin-dots.erro i{border-color:var(--sai)}
+@keyframes pinTreme{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.pin-pad{display:grid;grid-template-columns:repeat(3,76px);gap:16px 22px}
+.pin-pad button{width:76px;height:76px;border-radius:50%;border:1px solid var(--line2);background:rgba(63,240,255,.04);color:var(--text);font:600 30px var(--f-display);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s,box-shadow .12s,transform .08s}
+.pin-pad button:active{background:rgba(63,240,255,.18);box-shadow:0 0 22px rgba(63,240,255,.35);transform:scale(.95)}
+.pin-pad .pin-x{border-color:transparent;background:transparent;font:500 14px var(--f-body);color:var(--muted)}
+.pin-pad .pin-x svg{width:26px;height:26px}
+.pin-acoes{display:grid;gap:10px;width:100%;margin-top:22px}
+@media(max-height:640px){.pin-pad{grid-template-columns:repeat(3,64px);gap:12px 20px}.pin-pad button{width:64px;height:64px;font-size:26px}.pin-dots{margin:12px 0 18px}}
+/* Siri */
+.siri-passos{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.siri-passos li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;font-size:14px;line-height:1.55;color:var(--text2)}
+.siri-passos b{color:var(--text)}
+.siri-passos .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line2);color:var(--hud);font:600 13px var(--f-mono);box-shadow:0 0 10px rgba(63,240,255,.18)}
+.siri-c{display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px 8px 8px 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.25)}
+.siri-c code{flex:1;min-width:0;overflow-wrap:anywhere;font:500 12px/1.45 var(--f-mono);color:var(--hud)}
+.siri-campos{display:grid;gap:4px;margin-top:8px;font-size:13.5px}
+.siri-campos b{font-family:var(--f-mono);color:var(--hud)}
+.siri-campos span{color:var(--muted)}
+.siri-ex{margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(63,240,255,.05);border:1px solid var(--line);font-size:13.5px;line-height:1.6;color:var(--text2)}
+.siri-r{display:none;padding:12px 14px;border-radius:12px;font-size:14.5px;line-height:1.55}
+.siri-r.on,.siri-r.err{display:block}
+.siri-r.on{background:rgba(43,255,154,.06);border:1px solid rgba(43,255,154,.3);color:var(--text)}
+.siri-r.err{background:rgba(255,197,61,.06);border:1px solid rgba(255,197,61,.3);color:var(--warn)}
 /* tela de entrada */
 #auth{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow-y:auto;background:radial-gradient(700px 500px at 80% -10%,rgba(255,45,85,.18),transparent 60%),radial-gradient(600px 500px at 0% 100%,rgba(164,107,255,.14),transparent 60%),var(--bg);padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
 #auth[hidden]{display:none}
@@ -590,6 +649,7 @@ html[data-fx="off"] .ledb,html[data-fx="off"] .scan,html[data-fx="off"] body::be
 <div id="tip" role="tooltip"></div>
 <div id="auth" hidden></div>
 <div class="barra-topo" aria-hidden="true"></div>
+<div id="pin" hidden></div>
 <button id="fab" class="fab" onclick="abrirSheet('saida')" aria-label="Registrar entrada ou saída"></button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -1298,6 +1358,114 @@ function briefing(){
   else p.push("Agenda de hoje livre.");
   return p.join(" ");
 }
+/* ---------- previsão do fim do mês ---------- */
+const mediana = a => { if(!a.length) return 0; const b=[...a].sort((x,y)=>x-y), k=b.length>>1; return b.length%2?b[k]:(b[k-1]+b[k])/2; };
+const dataL = x => x.data || (x.mes ? x.mes+"-01" : "");
+function previsao(){
+  const m=mesHoje(), h=hojeISO(), d=new Date().getDate(), dm=diasNoMes(m), rest=dm-d, ant=addMes(m,-1);
+  const {ent,sai}=totais(m);
+  const datas=[...S.gastos,...S.recebimentos].map(dataL).filter(Boolean).sort();
+  if(!datas.length) return null;
+  /* contas grandes: gastos únicos bem acima do normal (aluguel, fatura...) ficam fora do ritmo do dia a dia */
+  const recentes=S.gastos.filter(g=>dataL(g)>=addDias(h,-60) && dataL(g)<=h).map(g=>g.valor);
+  const corte=Math.max(250, mediana(recentes)*6);
+  /* ritmo: média do gasto do dia a dia nos últimos 21 dias (ou desde o primeiro registro) */
+  const ini = datas[0] > addDias(h,-20) ? datas[0] : addDias(h,-20);
+  const nDias=Math.max(1, Math.round((new Date(h+"T12:00:00")-new Date(ini+"T12:00:00"))/864e5)+1);
+  const diaADia=S.gastos.filter(g=>{ const dt=dataL(g); return dt>=ini && dt<=h && g.valor<corte; }).reduce((a,g)=>a+g.valor,0);
+  const ritmo=diaADia/nDias;
+  /* contas grandes do mês passado que ainda não vieram neste mês */
+  const grandesAnt={}, catMes={};
+  S.gastos.forEach(g=>{ if(g.mes===ant && g.valor>=corte) grandesAnt[g.cat]=(grandesAnt[g.cat]||0)+g.valor; if(g.mes===m) catMes[g.cat]=(catMes[g.cat]||0)+g.valor; });
+  const contas=Object.entries(grandesAnt).map(([c,v])=>[c, (catMes[c]||0)<v*.6 ? v-(catMes[c]||0) : 0]).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  /* entradas do mês passado que ainda não vieram neste mês */
+  const fAnt={}, fMes={};
+  S.recebimentos.forEach(r=>{ if(r.mes===ant) fAnt[r.fonte]=(fAnt[r.fonte]||0)+r.valor; if(r.mes===m) fMes[r.fonte]=(fMes[r.fonte]||0)+r.valor; });
+  const entradas=Object.entries(fAnt).map(([f,v])=>[f, (fMes[f]||0)<v*.6 ? v-(fMes[f]||0) : 0]).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const somaContas=contas.reduce((a,[,v])=>a+v,0), somaEnt=entradas.reduce((a,[,v])=>a+v,0);
+  const saiPrev=sai+ritmo*rest+somaContas, entPrev=ent+somaEnt, sobra=entPrev-saiPrev;
+  const livre=entPrev-sai-somaContas, porDia=rest>0 ? livre/rest : 0;
+  return {m,d,dm,rest,ent,sai,ritmo,nDias,corte,contas,entradas,somaContas,somaEnt,saiPrev,entPrev,sobra,porDia,livre,poucos:nDias<5};
+}
+function graficoPrevisao(p){
+  const {m,d,dm}=p, gd=Array(dm).fill(0), ed=Array(dm).fill(0);
+  const diaDe = x => Math.min(dm,Math.max(1,+String(x.data||"").slice(8,10)||1));
+  S.gastos.forEach(g=>{ if(g.mes===m) gd[diaDe(g)-1]+=g.valor; });
+  S.recebimentos.forEach(r=>{ if(r.mes===m) ed[diaDe(r)-1]+=r.valor; });
+  const cs=[], ce=[]; let a=0,b=0; for(let i=0;i<dm;i++){ a+=gd[i]; b+=ed[i]; cs.push(a); ce.push(b); }
+  /* depois de hoje: linha prevista até o fim do mês */
+  const ps=cs.map((v,i)=> i<d ? v : p.sai+(p.saiPrev-p.sai)*(i-d+1)/Math.max(1,dm-d));
+  const pe=ce.map((v,i)=> i<d ? v : p.ent+(p.entPrev-p.ent)*(i-d+1)/Math.max(1,dm-d));
+  const mob=ehMob(), W=mob?400:720, H=mob?230:240, pl=mob?52:62, pr=mob?14:18, pt=18, pb=30, iw=W-pl-pr, ih=H-pt-pb;
+  const top=niceCeil(Math.max(p.saiPrev,p.entPrev,1));
+  const X=i=>pl+(dm>1?i/(dm-1):0)*iw, Y=v=>pt+ih-(v/top)*ih, base=pt+ih, oc=ocultarEnt||ocultarSai, id=novoId("pv");
+  const grid=[0,.5,1].map(f=>`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${Y(top*f).toFixed(1)}" y2="${Y(top*f).toFixed(1)}"/><text class="ax" x="${pl-8}" y="${(Y(top*f)+3.5).toFixed(1)}" text-anchor="end">${oc?"•••":fmtMil(top*f)}</text>`).join("");
+  const marcas=[...new Set([1,10,20,dm])].filter(x=>x===dm || dm-x>3);
+  const ticks=marcas.map(x=>`<text class="mx" x="${X(x-1).toFixed(1)}" y="${H-8}" text-anchor="middle">${x}</text>`).join("");
+  const pt2=(arr,de,ate)=>arr.slice(de,ate).map((v,k)=>`${X(de+k).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+  const xh=X(d-1).toFixed(1), temEnt=p.entPrev>0;
+  const area=`M${X(0).toFixed(1)},${base} L${pt2(ps,0,d).split(" ").join(" L")} L${xh},${base} Z`;
+  CH[id]={xs:Array.from({length:dm},(_,i)=>X(i)), sel:null,
+    on(i,svg){ const x=X(i).toFixed(1), cr=svg.querySelector(".cross"); cr.setAttribute("x1",x); cr.setAttribute("x2",x); cr.classList.add("on");
+      const d1=svg.querySelector(".hd-s"), d2=svg.querySelector(".hd-e"); d1.setAttribute("cx",x); d1.setAttribute("cy",Y(ps[i]).toFixed(1)); d1.classList.add("on"); d2.setAttribute("cx",x); d2.setAttribute("cy",Y(pe[i]).toFixed(1)); d2.classList.toggle("on",temEnt); },
+    off(svg){ svg.querySelectorAll(".cross,.hdot").forEach(e=>e.classList.remove("on")); },
+    tip(i){ const iso=`${m}-${p2(i+1)}`, fut=i>=d; return `<div class="tt">${diaSemana(iso)} · ${dataBR(iso)}${fut?" · previsão":""}</div>${tr(fut?"Deve ter saído até aqui":"Saiu no mês até aqui",fmtK(ps[i],"sai"),"neg")}${temEnt?tr(fut?"Deve ter entrado até aqui":"Entrou no mês até aqui",fmtK(pe[i],"ent"),"pos"):""}${fut?"":tr("Saiu no dia",fmtK(gd[i],"sai"))}`; },
+    pick(i){ const el=document.getElementById("pr-"+id); if(el) el.innerHTML=this.tip(i); }
+  };
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" data-ch="${id}" role="img" aria-label="Previsão de entradas e saídas até o fim do mês">
+    <defs><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff3d63" stop-opacity=".4"/><stop offset="1" stop-color="#ff3d63" stop-opacity="0"/></linearGradient></defs>
+    <rect class="pv-fut" x="${xh}" y="${pt}" width="${(W-pr-X(d-1)).toFixed(1)}" height="${ih}" rx="6"/>
+    ${grid}${ticks}
+    <line class="pv-hoje" x1="${xh}" x2="${xh}" y1="${pt}" y2="${base}"/><text class="pv-hj" x="${xh}" y="${pt-5}" text-anchor="${d>dm-3?"end":"middle"}">HOJE</text>
+    <path class="fadein" d="${area}" style="fill:url(#${id}g)"/>
+    ${temEnt?`<polyline class="l-ent" points="${pt2(pe,0,d)}"/><polyline class="pv-e" points="${pt2(pe,d-1,dm)}"/><circle class="pv-fim e" cx="${X(dm-1).toFixed(1)}" cy="${Y(p.entPrev).toFixed(1)}" r="4.5"/>`:""}
+    <polyline class="l-sai draw" pathLength="1" points="${pt2(ps,0,d)}"/>
+    <polyline class="pv-s" points="${pt2(ps,d-1,dm)}"/>
+    <circle class="ping" cx="${xh}" cy="${Y(p.sai).toFixed(1)}" r="4"/>
+    <circle class="pv-fim s" cx="${X(dm-1).toFixed(1)}" cy="${Y(p.saiPrev).toFixed(1)}" r="4.5"/>
+    <line class="cross" x1="0" x2="0" y1="${pt}" y2="${base}"/>
+    <circle class="hdot hd-e" r="5" style="stroke:var(--ent)"/><circle class="hdot hd-s" r="5" style="stroke:var(--sai)"/>
+    <rect class="hit" x="${pl-6}" y="0" width="${iw+12}" height="${H}" onpointermove="chMove(event,this)" onpointerleave="chLeave(this)" onclick="chClick(event,this)"/>
+  </svg></div>
+  <div class="pv-read" id="pr-${id}" aria-live="polite">${CH[id].tip(dm-1)}</div>`;
+}
+function painelPrevisao(){
+  const p=previsao();
+  if(!p) return "";
+  const mes=mesLongo(p.m).split(" ")[0], oc=ocultarEnt||ocultarSai, nome=esc(String(C("nome")||NOME).split(" ")[0]);
+  const v = x => oc ? "R$ •••••" : fmt(x);
+  let tom, frase;
+  if(!p.entPrev){ tom="info"; frase=`Neste ritmo, devem sair <b>${fmtK(p.saiPrev,"sai")}</b> até o fim de ${mes}. Ainda não há entradas registradas neste mês, então não dá para prever a sobra.`; }
+  else if(p.sobra<0){ tom="neg"; frase=`Atenção, ${nome}: neste ritmo, ${mes} fecha <b>${v(-p.sobra)} no vermelho</b>.`; }
+  else if(p.sobra<p.entPrev*.15){ tom="warn"; frase=`Vai fechar apertado, ${nome}: neste ritmo sobram <b>${v(p.sobra)}</b> no fim de ${mes}.`; }
+  else { tom="pos"; frase=`Ritmo tranquilo, ${nome}. Neste ritmo, você fecha ${mes} com <b>${v(p.sobra)}</b> sobrando.`; }
+  let dica="";
+  if(p.entPrev && p.rest>0){
+    if(p.livre<=0) dica=`O que entra no mês já foi todo comprometido. Cada gasto daqui até o dia ${p.dm} aumenta o vermelho.`;
+    else dica=`Para fechar no azul, dá para gastar até <b>${fmtK(p.porDia,"sai")} por dia</b> até o dia ${p.dm}. Seu ritmo hoje é ${fmtK(p.ritmo,"sai")} por dia${p.ritmo>p.porDia?", acima do que cabe":""}.`;
+  }
+  const lst = arr => arr.map(([n,x])=>`${esc(n)} ${fmtK(x,"sai")}`).join(", ");
+  const como=[
+    `<li><b>Gasto do dia a dia:</b> ${fmtK(p.ritmo,"sai")} por dia. É a média dos últimos ${p.nDias} ${p.nDias===1?"dia":"dias"}, sem contar contas grandes (gastos únicos acima de ${fmtCurto(p.corte)}).</li>`,
+    `<li><b>Até o fim do mês:</b> ${p.rest} ${p.rest===1?"dia":"dias"} × ${fmtK(p.ritmo,"sai")} = ${fmtK(p.ritmo*p.rest,"sai")}.</li>`,
+    p.contas.length?`<li><b>Contas grandes que vieram mês passado e ainda não vieram agora:</b> ${lst(p.contas)}.</li>`:"",
+    p.entradas.length?`<li><b>Entradas que vieram mês passado e ainda não vieram agora:</b> ${p.entradas.map(([n,x])=>`${esc(n)} ${fmtK(x,"ent")}`).join(", ")}.</li>`:"",
+    `<li>A previsão se ajusta sozinha a cada registro. Quanto mais dias registrados, mais certeira fica.</li>`
+  ].join("");
+  return `<section class="panel glow" id="previsao">${FX}
+    <div class="ph" style="margin-bottom:8px"><h2>Previsão do fim do mês</h2><span class="tag">dia ${p.d} de ${p.dm}</span></div>
+    <div class="pv-v ${tom}"><i></i><p>${frase}${dica?` <span>${dica}</span>`:""}</p></div>
+    ${p.poucos?`<p class="note" style="margin:0 0 14px">Ainda tenho poucos dias de registros, então esta previsão é aproximada.</p>`:""}
+    <div class="tres-c"><div class="tres">
+      <div class="n3 sai"><div class="n3l">${IC_SAI}Deve sair</div><b>${fmtK(p.saiPrev,"sai")}</b><small>já saiu ${fmtK(p.sai,"sai")}${p.rest?` + ${fmtK(p.saiPrev-p.sai,"sai")} previstos`:""}</small></div>
+      <div class="n3 ent"><div class="n3l">${IC_ENT}Deve entrar</div><b>${fmtK(p.entPrev,"ent")}</b><small>${p.somaEnt?`já entrou ${fmtK(p.ent,"ent")} + ${fmtK(p.somaEnt,"ent")} esperados`:"o que já entrou no mês"}</small></div>
+      <div class="n3 sob ${p.sobra<0?'neg':''}"><div class="n3l">${IC_SOB}${p.sobra<0?"Deve faltar":"Deve sobrar"}</div><b>${p.entPrev?v(Math.abs(p.sobra)):"—"}</b><small>no dia ${p.dm}, se o ritmo continuar</small></div>
+    </div></div>
+    <div class="ph" style="margin:22px 0 6px"><span class="psub" style="margin:0">Linha cheia: o que já aconteceu. Tracejada: a previsão até o dia ${p.dm}.</span><div class="legend"><span><i class="lg sai"></i>Saídas</span>${p.entPrev?'<span><i class="lg ent"></i>Entradas</span>':""}</div></div>
+    ${graficoPrevisao(p)}
+    <details class="more"><summary>Como calculei</summary><ul class="pv-como">${como}</ul></details>
+  </section>`;
+}
 function vInicio(){
   const m=mesHoje(), {ent,sai}=totais(m), hoje=hojeISO();
   const gHoje=S.gastos.filter(g=>g.data===hoje).reduce((a,g)=>a+g.valor,0);
@@ -1331,6 +1499,7 @@ function vInicio(){
     <div class="ph"><h2>Hoje</h2><button class="link" onclick="go('agenda')">Agenda</button></div>
     ${tarefas.length?tarefas.map(e=>itemAgenda(e,false)).join(""):`<div class="empty">Nada agendado para hoje.<br><button class="link" onclick="go('agenda')">Adicionar compromisso</button></div>`}
   </section>
+  ${painelPrevisao()}
   <section class="panel glow">${FX}
     <div class="ph" style="margin-bottom:8px"><h2>Seu mês, dia a dia</h2><div class="legend"><span><i class="lg sai"></i>Saiu (acumulado)</span><span><i class="lg ent"></i>Entrou (acumulado)</span><span><i class="lg bar"></i>Saiu no dia</span></div></div>
     <p class="psub">A linha vermelha mostra o total que já saiu no mês, dia após dia. A verde, o total que entrou. As barrinhas são o gasto de cada dia.</p>
@@ -1352,7 +1521,7 @@ function ritmo(m,sai){
   if(periodo==="hoje") return {l:"Lançamentos",v:String(recPer(m).length+gasPer(m).length),s:"registrados hoje"};
   if(periodo==="7d") return {l:"Média por dia",v:fmtK(sai/7,"sai"),s:"saídas ÷ 7 dias"};
   const dm=diasNoMes(m);
-  if(m===mesHoje()){ const med=sai/new Date().getDate(); return {l:"Média de gasto por dia",v:fmtK(med,"sai"),s:"se continuar assim, o mês fecha com "+fmtK(med*dm,"sai")+" de saídas"}; }
+  if(m===mesHoje()){ const med=sai/new Date().getDate(), pv=previsao(); return {l:"Média de gasto por dia",v:fmtK(med,"sai"),s:"previsão: o mês fecha com "+fmtK(pv?pv.saiPrev:med*dm,"sai")+" de saídas"}; }
   if(m>mesHoje()) return {l:"Média por dia",v:fmtK(0,"sai"),s:"mês ainda não começou"};
   return {l:"Média por dia",v:fmtK(sai/dm,"sai"),s:`saídas ÷ ${dm} dias`};
 }
@@ -1889,6 +2058,7 @@ async function puxarNuvem(){
   } else await enviarNuvem();
   LS.set("minhavida5", S); dbReady = true;
   if(podeRender()) render(); else { status(); atualizarSino(); }
+  puxarFila();
 }
 function trocarUsuario(id){
   let ant = null; try{ ant = localStorage.getItem("mf_uid"); }catch(e){}
@@ -1968,14 +2138,14 @@ function importarDados(){
   toast(`Pronto! ${dep - antes} itens trazidos do app antigo.`,null,null,"ok"); som("ent");
 }
 function painelDados(){
-  return `<section class="panel s7" id="importar">
+  return `${painelSiri()}<section class="panel s7" id="importar">
     <div class="ph" style="margin-bottom:8px"><h2>Trazer dados do MindFirst antigo</h2></div>
     <p class="psub">No MindFirst antigo (o do claude.ai), vá em Ajustes e toque em <b>Copiar meus dados</b>. Depois cole aqui e toque em Importar. Nada é apagado: os lançamentos se juntam.</p>
     <div class="form"><textarea id="imp-txt" rows="4" placeholder="Cole aqui os dados copiados" aria-label="Dados copiados do app antigo"></textarea><button class="btn" onclick="importarDados()">Importar</button></div>
   </section>
   <section class="panel s5">
     <div class="ph"><h2>Sua conta</h2></div>
-    <div class="cfgl">${linhaCfg("Conectado como",esc(usuario?usuario.email:""),`<button class="mini-btn" onclick="sair()">Sair</button>`)}</div>
+    <div class="cfgl">${linhaCfg("Conectado como",esc(usuario?usuario.email:""),`<button class="mini-btn" onclick="sair()">Sair</button>`)}${linhasPin()}</div>
     <p class="note">${dbReady?"Tudo sincronizado com a sua conta.":"Sem conexão agora. As mudanças são enviadas quando a internet voltar."}</p>
   </section>`;
 }
@@ -2000,6 +2170,179 @@ document.addEventListener("visibilitychange", ()=>{
   if(document.visibilityState === "visible" && usuario){ if(ehSujo()) enviarNuvem().then(puxarNuvem); else puxarNuvem(); checarPush(); }
 });
 
+
+/* ---------- registro rápido pela Siri ---------- */
+const SIRI_URL = SB_URL + "/functions/v1/push";
+async function puxarFila(){
+  if(!sb || !usuario || puxarFila.ocupado) return;
+  puxarFila.ocupado = true;
+  try{
+    const { data, error } = await sb.from("fila_rapida").select("id,col,item").eq("user_id", usuario.id).order("id");
+    if(error || !data || !data.length) return;
+    let n = 0, ult = null;
+    data.forEach(r=>{
+      const it = r.item, col = r.col === "recebimentos" ? "recebimentos" : "gastos";
+      if(!it || !it.id || S[col].some(x=>x.id === it.id)) return;
+      S[col].push(it); if(col === "gastos" && it.cat) S.ultimaCat = it.cat; n++; ult = it;
+    });
+    LS.set("minhavida5", S);
+    try{ localStorage.setItem("mf_sujo","1"); }catch(e){}
+    await enviarNuvem();
+    if(!ehSujo()) await sb.from("fila_rapida").delete().in("id", data.map(r=>r.id));
+    if(n){
+      if(podeRender()) render(); else atualizarSino();
+      toast(n === 1 ? `Registrado pela Siri: ${fmt(ult.valor)} · ${esc(ult.cat || ult.fonte)}` : `${n} registros feitos pela Siri entraram no app`, null, null, "ok");
+    }
+  } finally { puxarFila.ocupado = false; }
+}
+function novaChaveSiri(){
+  const b = new Uint8Array(18); crypto.getRandomValues(b);
+  return Array.from(b, x=>x.toString(16).padStart(2,"0")).join("");
+}
+function ativarSiri(trocar){
+  if(trocar && !confirm("Gerar uma chave nova? O atalho atual para de funcionar até você colar a chave nova nele.")) return;
+  setCfg("siri", novaChaveSiri()); render();
+  setTimeout(()=>irPara("siri"), 60);
+  toast(trocar ? "Chave nova gerada. Atualize o atalho." : "Pronto! Agora monte o atalho seguindo os passos.", null, null, "ok");
+}
+function copiarTexto(t, msg){
+  const ok = ()=>toast(msg, null, null, "ok");
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, ()=>prompt("Copie:", t));
+  else prompt("Copie:", t);
+}
+async function testarSiri(){
+  const inp = document.getElementById("siri-t"), out = document.getElementById("siri-r");
+  const texto = (inp.value || "").trim();
+  if(!texto){ inp.focus(); return; }
+  out.className = "siri-r"; out.textContent = "Pensando…";
+  try{
+    const r = await fetch(SIRI_URL, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ siri:C("siri"), texto, teste:true }) });
+    const t = await r.text();
+    out.className = "siri-r on"; out.textContent = t;
+    try{ if(C("som") && "speechSynthesis" in window){ const u = new SpeechSynthesisUtterance(t); u.lang = "pt-BR"; speechSynthesis.cancel(); speechSynthesis.speak(u); } }catch(e){}
+  }catch(e){ out.className = "siri-r err"; out.textContent = "Sem conexão. Verifique a internet e tente de novo."; }
+}
+function painelSiri(){
+  const k = C("siri");
+  if(!k) return `<section class="panel s7" id="siri">
+    <div class="ph" style="margin-bottom:8px"><h2>Registrar pela Siri</h2><span class="tag">novo</span></div>
+    <p class="psub">Diga <b>"E aí Siri, Jarvis"</b>, fale <i>"gastei 35 no mercado"</i> e pronto: fica registrado sem abrir o app, e a Siri responde quanto você já gastou hoje. Funciona também com entradas: <i>"recebi 500 do freela"</i>.</p>
+    <button class="btn" onclick="ativarSiri(false)">Ativar registro pela Siri</button>
+  </section>`;
+  const passo = (n, t) => `<li><span class="n">${n}</span><div>${t}</div></li>`;
+  return `<section class="panel s7" id="siri">
+    <div class="ph" style="margin-bottom:8px"><h2>Registrar pela Siri</h2><span class="live"><i></i>Ativo</span></div>
+    <p class="psub">Monte o atalho uma vez no iPhone (leva uns 3 minutos). Depois é só dizer <b>"E aí Siri, Jarvis"</b> e falar o gasto ou a entrada.</p>
+    <ol class="siri-passos">
+      ${passo(1, `Abra o app <b>Atalhos</b> e toque em <b>+</b>. Toque no nome lá em cima e chame o atalho de <b>Jarvis</b>.`)}
+      ${passo(2, `Toque em <b>Adicionar Ação</b>, busque <b>Pedir Entrada</b> e toque nela. Onde está "Pergunta", escreva: <i>O que registro, senhor?</i>`)}
+      ${passo(3, `Adicione a ação <b>Obter Conteúdo do URL</b>. No lugar de "URL", cole o endereço:<div class="siri-c"><code>${esc(SIRI_URL)}</code><button class="mini-btn" onclick="copiarTexto(SIRI_URL,'Endereço copiado')">Copiar</button></div>`)}
+      ${passo(4, `Toque na setinha dessa ação. Em <b>Método</b> escolha <b>POST</b>. Em <b>Corpo da Solicitação</b> escolha <b>JSON</b>. Toque em <b>Adicionar novo campo › Texto</b> duas vezes:
+        <div class="siri-campos"><div><b>siri</b> <span>→ cole a sua chave</span></div><div><b>texto</b> <span>→ toque no valor e escolha <b>Entrada Fornecida</b></span></div></div>
+        <div class="siri-c"><code>${esc(k)}</code><button class="mini-btn" onclick="copiarTexto(C('siri'),'Chave copiada')">Copiar chave</button></div>`)}
+      ${passo(5, `Adicione a ação <b>Falar Texto</b> (é ela que lê a resposta em voz alta). Toque em <b>OK</b>. Pronto.`)}
+    </ol>
+    <div class="siri-ex"><b>Experimente falar:</b> "gastei 35 no mercado" · "paguei 1.200 de aluguel" · "35 reais de uber" · "recebi 500 do freela"</div>
+    <div class="form" style="margin-top:16px">
+      <div class="g2"><input id="siri-t" placeholder="Teste aqui: gastei 35 no mercado" autocomplete="off" onkeydown="if(event.key==='Enter')testarSiri()"><button class="btn sec" onclick="testarSiri()">Testar (não salva)</button></div>
+      <div id="siri-r" class="siri-r" aria-live="polite"></div>
+    </div>
+    <p class="note">A chave é só sua: quem tiver ela consegue registrar na sua conta. <button class="link" onclick="ativarSiri(true)">Gerar chave nova</button></p>
+  </section>`;
+}
+setInterval(()=>{ if(document.visibilityState === "visible" && usuario) puxarFila(); }, 60000);
+
+/* ---------- bloqueio com PIN (vale só neste aparelho) ---------- */
+const pinCfg = () => { try{ return JSON.parse(localStorage.getItem("mf_pin") || "null"); }catch(e){ return null; } };
+const pinGravar = v => { try{ v ? localStorage.setItem("mf_pin", JSON.stringify(v)) : localStorage.removeItem("mf_pin"); }catch(e){} };
+const pinLigado = () => !!(pinCfg() || {}).hash;
+async function pinHash(pin, sal){
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(sal + ":" + pin));
+  return Array.from(new Uint8Array(b), x=>x.toString(16).padStart(2,"0")).join("");
+}
+let pinBuf = "", pinModo = "abrir", pinNovo = "", pinSaiu = 0, pinErros = 0, pinEspera = 0, pinTimer = null;
+const pinAberto = () => !document.getElementById("pin").hidden;
+const PIN_TXT = {
+  abrir:["MindFirst bloqueado","Digite seu PIN para entrar."],
+  criar:["Crie seu PIN","Escolha 4 números. Ele vai abrir o MindFirst neste aparelho."],
+  confirmar:["Confirme o PIN","Digite os mesmos 4 números de novo."],
+  esqueci:["Esqueceu o PIN?","Para criar outro, entre de novo com seu e-mail e senha. Seus dados continuam salvos na sua conta."]
+};
+function pinTravar(){ if(!pinLigado() || pinAberto()) return; pinModo = "abrir"; pinBuf = ""; pinTela(); }
+function pinTela(msg, erro){
+  const el = document.getElementById("pin"), [tt, sub] = PIN_TXT[pinModo];
+  el.hidden = false; document.body.classList.add("travado");
+  const pad = pinModo === "esqueci"
+    ? `<div class="pin-acoes"><button class="btn" onclick="pinRedefinir()">Entrar com e-mail e senha</button><button class="btn sec" onclick="pinModo='abrir';pinTela()">Voltar</button></div>`
+    : `<div class="pin-dots" id="pin-dots" aria-hidden="true">${[0,1,2,3].map(()=>"<i></i>").join("")}</div>
+       <div class="pin-pad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button onclick="pinTecla('${n}')">${n}</button>`).join("")}
+         <button class="pin-x" onclick="${pinModo === "abrir" ? "pinModo='esqueci';pinTela()" : "pinCancelar()"}">${pinModo === "abrir" ? "Esqueci" : "Cancelar"}</button>
+         <button onclick="pinTecla('0')">0</button>
+         <button class="pin-x" aria-label="Apagar" onclick="pinApagar()"><svg ${SV}><path d="M21 5H9l-6 7 6 7h12z"/><path d="M13 9l5 5M18 9l-5 5"/></svg></button></div>`;
+  el.innerHTML = `<div class="pin-box"><img src="/icon-192.png?v=3" alt="">
+    <h1>${tt}</h1><p id="pin-msg" class="${erro ? "err" : ""}">${esc(msg || sub)}</p>${pad}</div>`;
+  pinPontos();
+}
+function pinFechar(){ const el = document.getElementById("pin"); el.hidden = true; el.innerHTML = ""; if(document.getElementById("auth").hidden) document.body.classList.remove("travado"); }
+function pinPontos(){ const d = document.getElementById("pin-dots"); if(d) d.querySelectorAll("i").forEach((x,i)=>x.classList.toggle("on", i < pinBuf.length)); }
+function pinMsg(t, erro){ const m = document.getElementById("pin-msg"); if(m){ m.textContent = t; m.className = erro ? "err" : ""; } }
+function pinTecla(n){
+  if(pinBuf.length >= 4) return;
+  if(Date.now() < pinEspera){ pinMsg(`Muitas tentativas. Aguarde ${Math.ceil((pinEspera - Date.now())/1000)} segundos.`, true); return; }
+  pinBuf += n; pinPontos(); vibrar(8);
+  if(pinBuf.length === 4) setTimeout(pinConferir, 140);
+}
+function pinApagar(){ pinBuf = pinBuf.slice(0,-1); pinPontos(); }
+function pinCancelar(){ pinBuf = ""; pinNovo = ""; pinFechar(); }
+function pinErro(t){
+  const d = document.getElementById("pin-dots");
+  if(d){ d.classList.remove("erro"); void d.offsetWidth; d.classList.add("erro"); }
+  vibrar([40,40,40]); pinBuf = ""; setTimeout(()=>{ if(d) d.classList.remove("erro"); pinPontos(); }, 420); pinMsg(t, true);
+}
+async function pinConferir(){
+  const b = pinBuf;
+  if(pinModo === "abrir"){
+    const c = pinCfg();
+    if(c && await pinHash(b, c.sal) === c.hash){ pinErros = 0; pinBuf = ""; pinFechar(); som("ok"); return; }
+    pinErros++;
+    if(pinErros >= 5){ pinErros = 0; pinEspera = Date.now() + 30000; pinErro("Muitas tentativas. Aguarde 30 segundos."); return; }
+    pinErro(`PIN incorreto. ${5 - pinErros === 1 ? "Mais 1 tentativa" : "Mais " + (5 - pinErros) + " tentativas"} antes de uma pausa.`);
+    return;
+  }
+  if(pinModo === "criar"){ pinNovo = b; pinBuf = ""; pinModo = "confirmar"; pinTela(); return; }
+  if(pinModo === "confirmar"){
+    if(b !== pinNovo){ pinModo = "criar"; pinNovo = ""; pinBuf = ""; pinTela("Os dois PINs ficaram diferentes. Escolha de novo.", true); return; }
+    const sal = novaChaveSiri().slice(0,16), ant = pinCfg() || {};
+    pinGravar({ sal, hash: await pinHash(b, sal), min: ant.min !== undefined ? ant.min : 1 });
+    pinNovo = ""; pinBuf = ""; pinFechar(); render();
+    toast("PIN ativado. O MindFirst pede o PIN ao abrir neste aparelho.", null, null, "ok"); som("ok");
+  }
+}
+function pinRedefinir(){ pinGravar(null); pinFechar(); sair(); }
+function pinAlternar(){
+  if(pinLigado()){ pinGravar(null); render(); toast("Bloqueio com PIN desligado neste aparelho.", null, null, "info"); return; }
+  pinModo = "criar"; pinBuf = ""; pinNovo = ""; pinTela();
+}
+function pinTrocar(){ pinModo = "criar"; pinBuf = ""; pinNovo = ""; pinTela("Escolha os 4 números do novo PIN."); }
+function pinTempo(v){ const c = pinCfg(); if(!c) return; c.min = +v; pinGravar(c); toast(+v === 0 ? "Bloqueia assim que você sair do app." : `Bloqueia quando você ficar ${v} min fora do app.`, null, null, "ok"); }
+function linhasPin(){
+  const on = pinLigado(), c = pinCfg() || {}, m = c.min !== undefined ? c.min : 1;
+  return linhaCfg("Bloqueio com PIN", on ? "O app pede o PIN ao abrir neste aparelho." : "Pede 4 números para abrir o app neste aparelho.", swt(on, "pinAlternar()", "Bloqueio com PIN"))
+    + (on ? linhaCfg("Bloquear quando sair do app", "", `<select onchange="pinTempo(this.value)" aria-label="Quando bloquear">${[[0,"Na hora"],[1,"Depois de 1 min"],[5,"Depois de 5 min"],[15,"Depois de 15 min"]].map(([v,t])=>`<option value="${v}" ${v===m?"selected":""}>${t}</option>`).join("")}</select>`)
+      + linhaCfg("Trocar o PIN", "", `<button class="mini-btn" onclick="pinTrocar()">Trocar</button>`) : "");
+}
+document.addEventListener("keydown", e=>{
+  if(!pinAberto() || pinModo === "esqueci") return;
+  if(/^[0-9]$/.test(e.key)){ e.preventDefault(); pinTecla(e.key); }
+  else if(e.key === "Backspace"){ e.preventDefault(); pinApagar(); }
+});
+document.addEventListener("visibilitychange", ()=>{
+  if(!pinLigado()) return;
+  const c = pinCfg() || {}, m = c.min !== undefined ? c.min : 1;
+  if(document.visibilityState === "hidden"){ pinSaiu = Date.now(); if(m === 0) pinTravar(); }
+  else if(pinSaiu && Date.now() - pinSaiu >= m * 60000) pinTravar();
+});
+pinTravar();
 setInterval(()=>{ status(); checarLembretes(); atualizarSino(); }, 30000);
 render();
 animarEntrada();
