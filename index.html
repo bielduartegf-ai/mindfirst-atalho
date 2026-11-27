@@ -551,6 +551,7 @@ header.top{padding-top:calc(18px + env(safe-area-inset-top,0px))}
 .sf-a.laranja{--c:#ff9f0a} .sf-a.cinza{--c:#8e8e93} .sf-a.azul{--c:#0a84ff}
 .sf-a .pill{padding:3px 8px;border-radius:7px;background:rgba(255,255,255,.08);color:#d1d1d6;font-size:13px;overflow-wrap:anywhere}
 .sf-a .pill.var{background:rgba(10,132,255,.22);color:#64b5ff}
+.sf-a.sf-in{margin-left:22px}
 .siri-passos .op{display:block;margin-top:4px;font-size:13px;color:var(--muted)}
 /* tela de entrada */
 #auth{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow-y:auto;background:radial-gradient(700px 500px at 80% -10%,rgba(255,45,85,.18),transparent 60%),radial-gradient(600px 500px at 0% 100%,rgba(164,107,255,.14),transparent 60%),var(--bg);padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
@@ -2247,24 +2248,29 @@ function painelSiri(){
 
     <div class="siri-fim">
       <div class="sf-t">É assim que o atalho fica no final</div>
-      <div class="sf-a laranja"><b>Pedir</b> <span class="pill">Texto</span> com <span class="pill">O que registro, senhor?</span></div>
+      <div class="sf-a laranja"><b>Pedir</b> <span class="pill">Texto</span> com <span class="pill">O que deseja, senhor?</span></div>
       <div class="sf-a cinza"><b>Codificar</b> <span class="pill var">Entrada Fornecida</span></div>
       <div class="sf-a azul"><b>URL</b> <span class="pill">https://gvmc…texto=</span><span class="pill var">Texto codificado</span></div>
       <div class="sf-a azul"><b>Obter conteúdo de</b> <span class="pill var">URL</span></div>
       <div class="sf-a cinza"><b>Falar</b> <span class="pill var">Conteúdo do URL</span></div>
+      <div class="sf-a laranja"><b>Se</b> <span class="pill var">Conteúdo do URL</span> <b>não contém</b> <span class="pill">ordens</span></div>
+      <div class="sf-a cinza sf-in"><b>Executar</b> <span class="pill">Jarvis</span></div>
+      <div class="sf-a laranja"><b>Fim do Se</b></div>
     </div>
 
     <ol class="siri-passos">
       ${passo(1, `Toque aqui para copiar o seu link (ele já tem a sua chave):<button class="btn" style="margin-top:10px" onclick="copiarTexto(linkSiri(),'Link copiado! Agora abra o app Atalhos.')">Copiar meu link</button>`)}
       ${passo(2, `Abra o app <b>Atalhos</b> do iPhone (ícone de quadrados coloridos) e toque no <b>+</b> lá em cima.`)}
-      ${passo(3, `Toque na busca de ações embaixo, escreva <b>pedir</b> e toque em <b>Pedir Entrada</b>. <span class="op">Opcional: no lugar de "Pergunta", escreva <i>O que registro, senhor?</i></span>`)}
+      ${passo(3, `Toque na busca de ações embaixo, escreva <b>pedir</b> e toque em <b>Pedir Entrada</b>. <span class="op">No lugar de "Pergunta", escreva <i>O que deseja, senhor?</i></span>`)}
       ${passo(4, `Busque <b>codificar</b> e toque em <b>Codificar URL</b>. Não precisa mexer em nada nela.`)}
       ${passo(5, `Busque <b>URL</b> e toque na ação que se chama só <b>URL</b> (ícone azul de corrente). Toque no texto dela (aparece <i>apple.com</i>) e apague. Toque <b>uma vez</b> no campo vazio e escolha <b>Colar</b>. Depois, ainda com o teclado aberto, toque na sugestão logo acima do teclado (<b>Texto codificado</b>): ela entra no fim do link.`)}
       ${passo(6, `Busque <b>conteúdo</b> e toque em <b>Obter Conteúdo do URL</b>. Não mexa em nada: ela já usa o link do passo anterior.`)}
       ${passo(7, `Busque <b>falar</b> e toque em <b>Falar Texto</b>.`)}
-      ${passo(8, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>. Pronto!`)}
+      ${passo(8, `Toque no nome lá em cima (<b>Novo Atalho</b>), escolha <b>Renomear</b>, escreva <b>Jarvis</b> e toque em <b>OK</b>.`)}
+      ${passo(9, `<b>Modo conversa</b> (para o Jarvis continuar ouvindo): busque <b>se</b> e toque em <b>Se</b>. Toque em <b>Entrada</b> e escolha <b>Conteúdo do URL</b>. Toque em <b>Condição</b> e escolha <b>não contém</b>. No campo <b>Texto</b>, escreva <b>ordens</b>.`)}
+      ${passo(10, `Busque <b>executar atalho</b> e toque em <b>Executar Atalho</b>. Arraste essa ação para <b>dentro do Se</b> (entre "Se" e "Senão"). Toque em <b>Atalho</b> e escolha <b>Jarvis</b>. Se aparecer um bloco <b>Senão</b> vazio, pode deixar. Pronto!`)}
     </ol>
-    <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Quando ela perguntar, fale por exemplo: "gastei 35 no mercado" · "35 reais de uber" · "paguei 1.200 de aluguel" · "recebi 500 do freela".</div>
+    <div class="siri-ex"><b>Agora diga:</b> "E aí Siri, Jarvis". Fale do seu jeito: "gastei 35 no mercado" · "20 de uber e 15 de lanche" · "recebi 500 do freela" · "quanto eu gastei esse mês?" · "o que tenho amanhã?" · "me explica o que é CDI". Ele responde e continua ouvindo; para encerrar, diga <b>"obrigado, só isso"</b>.</div>
 
     <div class="form" style="margin-top:18px">
       <div class="psub" style="margin:0">Quer ver como a Siri vai responder? Escreva uma frase aqui:</div>
