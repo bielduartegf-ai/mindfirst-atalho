@@ -492,6 +492,15 @@ main.entra .meter>i,main.entra .jb>i{animation:barx 1.1s cubic-bezier(.2,.8,.2,1
 .a-links{display:flex;justify-content:center;gap:24px}
 .a-dica{margin:6px 0 0;padding:12px 14px;border-radius:12px;border:1px solid var(--line2);background:rgba(63,240,255,.05);font-size:13px;line-height:1.5;color:var(--text2);text-align:left}
 body.travado{overflow:hidden}
+.nlist{display:grid}
+.nrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-top:1px solid var(--line)}
+.nrow:first-child{border-top:0}
+.ntx{min-width:0}
+.ntx b{display:block;font-weight:600;font-size:15px}
+.ntx small{display:block;margin-top:4px;font-size:12.5px;line-height:1.5;color:var(--muted);font-style:italic}
+.ntx .link{margin-top:4px;padding:4px 0}
+.ntx .link:disabled{opacity:.4;cursor:default;text-decoration:none}
+@media(max-width:520px){.nrow{flex-direction:column;align-items:flex-start}.nrow>.ctl,.nrow>.sw{align-self:flex-end}}
 .banner.info{border-color:var(--line2);background:rgba(63,240,255,.05)}
 .banner.info .ic{background:rgba(63,240,255,.12);color:var(--hud)}
 /* Ajustes */
@@ -1682,18 +1691,45 @@ function testeApp(){
   toast("Teste: é assim que os avisos aparecem com o MindFirst aberto.",null,null,"al"); som("alerta"); vibrar([80,60,80]);
   const b = document.getElementById("sino"); b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
 }
+function textoAlerta(a){
+  const k = a.k, cat = a.cat || "";
+  let titulo = a.titulo, dica = "";
+  if(/^lim-/.test(k)){ titulo = `Atenção: ${cat} passou do limite`; dica = `Sugiro segurar ${cat} até virar o mês.`; }
+  else if(/^lim80-/.test(k)){ const lim = +S.limites[cat] || 0, v = somaCats(mesHoje())[cat] || 0; titulo = `${cat} perto do limite`; dica = `Restam ${fmt(Math.max(0, lim - v))} nessa categoria até o fim do mês.`; }
+  else if(/^mes-estourou/.test(k)){ titulo = "Saiu mais do que entrou"; dica = "Vale segurar os próximos gastos do mês."; }
+  else if(/^mes-80/.test(k)){ titulo = "80% do que entrou já saiu"; }
+  else if(/^ritmo/.test(k)){ titulo = "Ritmo de gastos alto"; dica = "Diminuindo um pouco por dia, o mês fecha no azul."; }
+  else if(/^pico/.test(k)){ titulo = `Acima do seu normal em ${cat}`; }
+  else if(/^grande/.test(k)){ titulo = "Gasto fora do padrão"; }
+  return { titulo, corpo: (a.texto + (dica ? " " + dica : "")).trim() };
+}
 async function alertasParaCelular(lista){
   if(!sb || !usuario || !C("alertasCel") || !lista.length) return;
-  for(const a of lista.slice(0,2)){ try{ await funcao({ acao:"alerta", titulo:a.titulo, corpo:a.texto, chave:a.k }); }catch(e){} }
+  for(const a of lista.slice(0,2)){ const t = textoAlerta(a); try{ await funcao({ acao:"alerta", titulo:t.titulo, corpo:t.corpo, chave:a.k }); }catch(e){} }
 }
 function configurarDiario(on,hora){
   const d = { on:!!on, hora: hora || C("diario").hora || "21:00" };
   setCfg("diario", d); render();
-  toast(on ? `Lembrete diário às ${d.hora}.` : "Lembrete diário desligado.", null, null, on ? "ok" : "info");
+  toast(on ? `Fechamento do dia às ${d.hora}.` : "Fechamento do dia desligado.", null, null, on ? "ok" : "info");
+}
+function configurarManha(on,hora){
+  const d = { on:!!on, hora: hora || (C("manha")||{}).hora || "08:00" };
+  setCfg("manha", d); render();
+  toast(on ? `Briefing da manhã às ${d.hora}.` : "Briefing da manhã desligado.", null, null, on ? "ok" : "info");
 }
 function setPushAgenda(){ setCfg("pushAgenda", C("pushAgenda") === false); render(); }
+function setSemanal(){ setCfg("semanal", C("semanal") === false); render(); }
+async function verExemplo(tipo){
+  if(pushEst !== "ativo"){ toast("Ative as notificações primeiro, no passo 2.",null,null,"al"); return; }
+  try{ const r = await funcao({ acao:"teste", tipo }); toast(r && r.enviados ? "Exemplo enviado. Olhe a notificação." : "Nenhum aparelho recebeu. Toque em Ativar de novo.",null,null,r && r.enviados ? "ok" : "al"); }
+  catch(e){ toast("Não foi possível enviar o exemplo.",null,null,"al"); }
+}
+const nomeCurto = () => { const n = String(C("nome")||"").trim().split(" ")[0]; return n ? ", " + esc(n) : ""; };
+function linhaNotif(titulo, exemplo, ctrl, tipo, ativo){
+  return `<div class="nrow"><div class="ntx"><b>${titulo}</b><small>${exemplo}</small>${tipo?`<button class="link" onclick="verExemplo('${tipo}')" ${ativo?"":"disabled"}>ver exemplo ›</button>`:""}</div>${ctrl}</div>`;
+}
 function painelNotificacoes(){
-  const d = C("diario"), at = pushEst === "ativo", th = C("testeHora");
+  const d = C("diario"), m = C("manha") || {}, at = pushEst === "ativo", th = C("testeHora");
   const st = { ativo:["Ativas","var(--ent)"], inativo:["Desligadas","var(--warn)"], negado:["Bloqueadas","var(--sai)"], instalar:["Falta instalar","var(--warn)"], "sem-suporte":["Sem suporte","var(--warn)"], verificando:["Verificando…","var(--hud)"] }[pushEst] || ["…","var(--hud)"];
   const instalado = ehApp() || !ehIOS;
   const p1 = instalado
@@ -1706,10 +1742,13 @@ function painelNotificacoes(){
     <p class="psub">Os avisos chegam como notificação do próprio MindFirst, mesmo com o app fechado. Faça estes passos uma vez em cada aparelho.</p>
     <ol class="setup">${p1}${p2}${p3}</ol>
     <div class="ph" style="margin:26px 0 6px"><h2>O que chega no celular</h2></div>
-    <div class="cfgl">
-      ${linhaCfg("Compromissos da agenda",`Aviso ${lembreteMin} min antes de cada compromisso`,swt(C("pushAgenda")!==false,"setPushAgenda()","Avisos da agenda no celular"))}
-      ${linhaCfg("Lembrete diário para registrar",d.on?`Todo dia às ${esc(d.hora)}: “registre os gastos de hoje”`:"Um aviso por dia para lançar o que entrou e o que saiu",`<div class="ctl"><input id="diario-h" type="time" value="${esc(d.hora||"21:00")}" aria-label="Horário do lembrete diário" onchange="configurarDiario(C('diario').on,this.value)">${swt(d.on,"configurarDiario(!C('diario').on,document.getElementById('diario-h').value)","Lembrete diário")}</div>`)}
-      ${linhaCfg("Alertas de gastos","Quando um gasto passa de um limite, das entradas do mês ou do seu normal",swt(C("alertasCel"),"togCfg('alertasCel')","Alertas de gastos no celular"))}
+    <p class="psub" style="margin-bottom:6px">Poucos avisos, só o que importa. Toque em <b>ver exemplo</b> para receber um agora com os seus números.</p>
+    <div class="nlist">
+      ${linhaNotif("Briefing da manhã",`“Bom dia${nomeCurto()}. 2 compromissos hoje: 10:00 Reunião… No mês sobram R$ 3.640.”`,`<div class="ctl"><input id="manha-h" type="time" value="${esc(m.hora||"08:00")}" aria-label="Horário do briefing da manhã" onchange="configurarManha(C('manha')&&C('manha').on,this.value)">${swt(m.on,"configurarManha(!(C('manha')&&C('manha').on),document.getElementById('manha-h').value)","Briefing da manhã")}</div>`,"manha",at)}
+      ${linhaNotif("Fechamento do dia",`“Hoje saíram R$ 253 em 3 lançamentos, a maior parte em Alimentação.” Se você não lançou nada, ele lembra.`,`<div class="ctl"><input id="diario-h" type="time" value="${esc(d.hora||"21:00")}" aria-label="Horário do fechamento do dia" onchange="configurarDiario(C('diario').on,this.value)">${swt(d.on,"configurarDiario(!C('diario').on,document.getElementById('diario-h').value)","Fechamento do dia")}</div>`,"fechamento",at)}
+      ${linhaNotif("Compromissos",`“Em ${lembreteMin} min: Reunião com cliente.” E outro quando começar.`,swt(C("pushAgenda")!==false,"setPushAgenda()","Avisos de compromissos"),"",at)}
+      ${linhaNotif("Alertas de gastos",`“Atenção: Alimentação passou do limite. R$ 415 de R$ 300. Sugiro segurar até virar o mês.” Só quando acontece.`,swt(C("alertasCel"),"togCfg('alertasCel')","Alertas de gastos"),"",at)}
+      ${linhaNotif("Resumo da semana",`Domingo às 20h: “Saíram R$ 1.240, 12% a menos que a semana passada. Maior gasto: Moradia.”`,swt(C("semanal")!==false,"setSemanal()","Resumo da semana"),"semana",at)}
     </div>
     <div class="det-f" style="justify-content:flex-start;border:0;margin-top:6px"><button class="link" onclick="testeApp()">Ver como fica um aviso aqui no app ›</button></div>
   </section>`;
@@ -1805,6 +1844,7 @@ async function enviarNuvem(){
   if(enviando){ marcarSujo(); return; }
   enviando = true;
   S.cfg = S.cfg || {}; try{ S.cfg.tz = Intl.DateTimeFormat().resolvedOptions().timeZone || S.cfg.tz; }catch(e){}
+  if(!S.cfg.nome) S.cfg.nome = C("nome");
   const { error } = await sb.from("estado").upsert({ user_id:usuario.id, dados:JSON.parse(JSON.stringify(S)), atualizado:new Date().toISOString() });
   enviando = false;
   if(!error){ try{ localStorage.removeItem("mf_sujo"); }catch(e){} dbReady = true; } else dbReady = false;
