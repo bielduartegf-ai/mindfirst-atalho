@@ -945,7 +945,9 @@ function som(tipo){
   }catch(e){}
 }
 function vibrar(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
-const semMov = () => { if(C("efeitos")==="off") return true; try{ return matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } };
+/* efeitos de luz valem por aparelho (o iPhone pode ser leve e o notebook completo) */
+const fxAqui = () => { try{ const v=localStorage.getItem("mf_efeitos"); if(v) return v; }catch(e){} return "completo"; };
+const semMov = () => { if(fxAqui()==="off") return true; try{ return matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } };
 function faiscas(x,y,cores,n,sobe,z){
   if(semMov()) return;
   const cv=document.createElement("canvas"); cv.className="fx"; if(z) cv.style.zIndex=z; document.body.appendChild(cv);
@@ -1048,7 +1050,7 @@ function status(){
 function render(){
   CH = {};
   tipHide();
-  document.documentElement.dataset.fx = C("efeitos");
+  document.documentElement.dataset.fx = fxAqui();
   const fab=document.getElementById("fab"); fab.hidden = sheetOpen; if(!fab.innerHTML) fab.innerHTML = ICON.plus;
   document.getElementById("nav").innerHTML = tabsVis().map(([k,l])=>`<button class="${k===tab?'on':''}" ${k===tab?'aria-current="page"':''} onclick="go('${k}')">${ICON[k]}<span>${l}</span></button>`).join("");
   const oe=document.getElementById("olhoEnt"), os=document.getElementById("olhoSai");
@@ -2045,7 +2047,7 @@ const linhaCfg = (titulo,sub,ctrl) => `<div class="cfg-r"><span>${titulo}${sub?`
 function togAba(k){ const a=Object.assign({},C("abas")); a[k]=a[k]===false; setCfg("abas",a); render(); }
 function togAl(k){ const a=Object.assign({},C("al")); a[k]=a[k]===false; setCfg("al",a); render(); }
 function togCfg(k){ setCfg(k,!C(k)); if(k==="som"){ somOn=C("som"); if(somOn) som("ok"); } render(); }
-function setEfeitos(v){ setCfg("efeitos",v); render(); animarEntrada(); }
+function setEfeitos(v){ gravar("mf_efeitos",v); render(); animarEntrada(); toast(v==="completo"?"Efeitos completos neste aparelho.":v==="leve"?"Efeitos leves neste aparelho.":"Efeitos desligados neste aparelho.",null,null,"ok"); }
 function salvarNome(v){ v=String(v||"").trim().slice(0,40); setCfg("nome",v||CFG_PAD.nome); toast("Nome atualizado",null,null,"ok"); }
 let CATL=[];
 function limiteCat(i,v){ const c=CATL[i]; if(!c) return; const n=parseValor(v); S.limites[c]=n>0?n:0; marcarTs("limites"); save(); atualizarSino(); toast(n>0?`Limite de ${c}: ${fmt(n)} por mês`:`${c} sem limite`,null,null,"ok"); }
@@ -2092,7 +2094,7 @@ function vAjustes(){
     <div class="ph"><h2>Aparência e privacidade</h2></div>
     <div class="cfgl">
       ${linhaCfg("Seu nome","Usado na saudação do início",`<input class="inl" value="${esc(C("nome"))}" onchange="salvarNome(this.value)" aria-label="Seu nome">`)}
-      ${linhaCfg("Efeitos de luz","Leve desliga as bordas girando e o brilho que passa",`<div class="seg">${[["completo","Completo"],["leve","Leve"],["off","Desligado"]].map(([k,l])=>`<button class="${C("efeitos")===k?'on':''}" onclick="setEfeitos('${k}')">${l}</button>`).join("")}</div>`)}
+      ${linhaCfg("Efeitos de luz","Vale só para este aparelho. Leve desliga as bordas girando e o brilho que passa",`<div class="seg">${[["completo","Completo"],["leve","Leve"],["off","Desligado"]].map(([k,l])=>`<button class="${fxAqui()===k?'on':''}" onclick="setEfeitos('${k}')">${l}</button>`).join("")}</div>`)}
       ${linhaCfg("Abrir com valores ocultos","Útil quando alguém está olhando a tela",swt(C("ocultarAoAbrir"),"togCfg('ocultarAoAbrir')","Abrir com valores ocultos"))}
     </div>
   </section>
