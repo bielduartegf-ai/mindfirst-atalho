@@ -808,6 +808,8 @@ const CFG_PAD = {nome:"Gabryel", abas:{agenda:true,metricas:true}, inicial:"inic
   diario:{on:false,hora:"21:00",id:null}, alertasCel:false, al:{saldo:true,limites:true,exagero:true,agenda:true,campanhas:true}, ocultarAoAbrir:false};
 const C = k => S.cfg[k]!==undefined ? S.cfg[k] : CFG_PAD[k];
 function marcarTs(k){ S.ts = S.ts || {}; S.ts[k] = Date.now(); }
+/* como o app te chama nas saudações (Ajustes › Como devo te chamar) */
+function tratar(){ const t=C("tratamento")||"senhor", n=String(C("nome")||NOME).trim().split(" ")[0]; return t==="nome"?(n||"senhor"):t==="majestade"?"Majestade":t; }
 function setCfg(k,v){ S.cfg[k]=v; marcarTs("cfg"); save(); }
 (()=>{ try{
   if(S.cfg.som===undefined && localStorage.getItem("mf_som")==="0") S.cfg.som=false;
@@ -1518,13 +1520,13 @@ function graficoPrevisao(p){
 function painelPrevisao(){
   const p=previsao();
   if(!p) return "";
-  const mes=mesLongo(p.m).split(" ")[0], oc=ocultarEnt||ocultarSai, nome=esc(String(C("nome")||NOME).split(" ")[0]);
+  const mes=mesLongo(p.m).split(" ")[0], oc=ocultarEnt||ocultarSai, nome=esc(tratar());
   const v = x => oc ? "R$ •••••" : fmt(x);
   let tom, frase;
   if(!p.entPrev){ tom="info"; frase=`Neste ritmo, devem sair <b>${fmtK(p.saiPrev,"sai")}</b> até o fim de ${mes}. Ainda não há entradas registradas neste mês, então não dá para prever a sobra.`; }
   else if(p.sobra<0){ tom="neg"; frase=`Atenção, ${nome}: neste ritmo, ${mes} fecha <b>${v(-p.sobra)} no vermelho</b>.`; }
   else if(p.sobra<p.entPrev*.15){ tom="warn"; frase=`Vai fechar apertado, ${nome}: neste ritmo sobram <b>${v(p.sobra)}</b> no fim de ${mes}.`; }
-  else { tom="pos"; frase=`Ritmo tranquilo, ${nome}. Neste ritmo, você fecha ${mes} com <b>${v(p.sobra)}</b> sobrando.`; }
+  else { tom="pos"; frase=`Ritmo tranquilo, ${nome}. Neste ritmo, ${mes} fecha com <b>${v(p.sobra)}</b> sobrando.`; }
   let dica="";
   if(p.entPrev && p.rest>0){
     if(p.livre<=0) dica=`O que entra no mês já foi todo comprometido. Cada gasto daqui até o dia ${p.dm} aumenta o vermelho.`;
@@ -1564,7 +1566,7 @@ function vInicio(){
   return `
   <section class="panel hero glow hudc">${LED}
     <div class="ph" style="margin:0"><div class="kick">Briefing · ${new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"})}</div><span class="live"><i></i>${dbReady?"Sincronizado":"Ao vivo"}</span></div>
-    <h1>${saudacao()}, ${esc(C("nome")||NOME)}.</h1>
+    <h1>${saudacao()}, ${esc(tratar())}.</h1>
     <p class="brief">${briefing()}</p>
     <div class="quote">${FRASES[fraseIdx]}</div>
   </section>
@@ -2393,7 +2395,7 @@ function pinReator(){
 function pinTela(msg, erro){
   const el = document.getElementById("pin");
   let [tt, sub] = PIN_TXT[pinModo];
-  if(pinModo === "abrir") tt = `${saudacao()}, ${String(C("nome") || NOME).split(" ")[0]}.`;
+  if(pinModo === "abrir") tt = `${saudacao()}, ${tratar()}.`;
   el.hidden = false; el.classList.remove("ok", "neg", "saindo"); document.body.classList.add("travado","pin-on");
   const pad = pinModo === "esqueci"
     ? `<div class="pin-acoes"><button class="btn" onclick="pinRedefinir()">Entrar com e-mail e senha</button><button class="btn sec" onclick="pinModo='abrir';pinTela()">Voltar</button></div>`
